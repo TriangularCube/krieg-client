@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "sourceMap": true,
+        "jsx": "react",
+        "esModuleInterop": true,
+        "allowJs": false
+    },
+    "include": ["**/*.ts", "**/*.tsx"]
+}
