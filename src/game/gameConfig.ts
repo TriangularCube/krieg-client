@@ -1,6 +1,6 @@
 import * as Phaser from 'phaser'
 
-import { TestScene } from './scenes/TestScene'
+// import { TestScene } from './scenes/TestScene'
 
 export const gameConfig: Phaser.Types.Core.GameConfig = {
     title: 'Phaser Template',
@@ -23,5 +23,8 @@ export const gameConfig: Phaser.Types.Core.GameConfig = {
     parent: 'game-root',
     backgroundColor: '#efc533',
 
-    scene: [TestScene],
+    // scene: [TestScene],
 }
+
+export { TestScene as StartScene } from './scenes/TestScene'
+export const StartSceneKey = 'Start'
