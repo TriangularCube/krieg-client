@@ -1,15 +1,17 @@
 import React, { FC, ReactElement } from 'react'
 import ReactDOM from 'react-dom'
 
-import * as Phaser from 'phaser'
-import { gameConfig } from './game/gameConfig'
+import { CssBaseline } from '@material-ui/core'
+
+import { NavBar } from './site/NavBar'
+import { Game } from './site/Game'
 
 const App: FC = (): ReactElement => {
-    new Phaser.Game(gameConfig)
     return (
         <>
-            <div style={{ textAlign: 'center' }}>This is React</div>
-            <div id='game-root' />
+            <CssBaseline />
+            <NavBar />
+            <Game />
         </>
     )
 }
