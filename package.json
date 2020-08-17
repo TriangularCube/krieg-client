@@ -1,12 +1,12 @@
 {
-  "name": "phaser-ts-react-template",
-  "version": "1.0.0",
+  "name": "krieg-client",
+  "version": "0.0.0",
   "description": "",
   "private": true,
   "scripts": {
     "start": "webpack-dev-server",
     "build": "webpack",
-    "deploy": "npm run build"
+    "deploy": "npm i && npm run build"
   },
   "keywords": [],
   "author": "",
