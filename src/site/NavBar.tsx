@@ -10,8 +10,19 @@ import {
     IconButton,
     Hidden,
     Button,
+    Menu,
+    MenuItem,
+    ListItemText,
 } from '@material-ui/core'
-import { Filter } from '@material-ui/icons'
+import { Filter, AccountCircle } from '@material-ui/icons'
+import {
+    usePopupState,
+    bindTrigger,
+    bindMenu,
+} from 'material-ui-popup-state/hooks'
+import { useLoginSelector } from '../util/redux/reduxReducers'
+import { useDispatch } from 'react-redux'
+import { setLoginState } from '../util/redux/actions'
 
 const useStyles = makeStyles(theme => ({
     menuButton: {
@@ -20,10 +31,21 @@ const useStyles = makeStyles(theme => ({
     spacer: {
         flex: 1,
     },
+    menuItemText: {
+        flex: 1,
+        flexDirection: 'row',
+        textAlign: 'right',
+    },
 }))
 
 export const NavBar: FC = (): ReactElement => {
     const classes = useStyles()
+    const popupState = usePopupState({
+        variant: 'popover',
+        popupId: 'userMenu',
+    })
+
+    const isLoggedIn = useLoginSelector(state => state.isLoggedIn)
 
     return (
         <AppBar position='sticky'>
@@ -54,6 +76,48 @@ export const NavBar: FC = (): ReactElement => {
                 <Button color='inherit' component={Link} to={'/about'}>
                     About
                 </Button>
+                {/* User button */}
+                <div>
+                    <IconButton color='inherit' {...bindTrigger(popupState)}>
+                        <AccountCircle />
+                    </IconButton>
+                    <Menu {...bindMenu(popupState)}>
+                        {!isLoggedIn && (
+                            <MenuItem
+                                onClick={popupState.close}
+                                component={Link}
+                                to='/login'
+                            >
+                                <ListItemText
+                                    className={classes.menuItemText}
+                                    primary='Login'
+                                />
+                            </MenuItem>
+                        )}
+
+                        <MenuItem
+                            onClick={popupState.close}
+                            component={Link}
+                            to='/target-select'
+                        >
+                            <ListItemText primary='Target Selection' />
+                        </MenuItem>
+
+                        {isLoggedIn && (
+                            // TODO: Logout could probably be handled here
+                            <MenuItem
+                                onClick={popupState.close}
+                                component={Link}
+                                to='/logout'
+                            >
+                                <ListItemText
+                                    className={classes.menuItemText}
+                                    primary='Logout'
+                                />
+                            </MenuItem>
+                        )}
+                    </Menu>
+                </div>
             </Toolbar>
         </AppBar>
     )

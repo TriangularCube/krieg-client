@@ -1,6 +1,7 @@
 const HtmlWebPackPlugin = require('html-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const CopyPlugin = require('copy-webpack-plugin')
+const Dotenv = require('dotenv-webpack')
 const path = require('path')
 
 module.exports = {
@@ -46,7 +47,8 @@ module.exports = {
                     toType: 'dir'
                 }
             ]
-        })
+        }),
+        new Dotenv(),
     ],
     devtool: 'source-map',
     devServer: {

@@ -1,12 +1,14 @@
-const localStorageName = 'Krieg-Client-API-target'
+const localStorageName = 'Krieg-API-Target'
 const targets = {
     local: 'http://localhost:8080',
-    dev: 'https://dev.mistfireforge.com/krieg/api',
+    dev: 'https://dev.krieg.mistfireforge.com/api',
+    staging: 'https://staging.krieg.mistfireforge.com/api',
+    production: 'https://krieg.mistfireforge.com/api',
 }
 const saved = localStorage.getItem(localStorageName)
 
-let targetName = saved ? saved : 'dev' // TODO: Should really be production later
-let targetUrl = saved ? targets[targetName] : targets.dev // TODO: Again, should really be production
+let targetName = saved ?? process.env.DEFAULT_TARGET
+let targetUrl = targets[targetName] ?? targets.production
 
 export const getTargetUrl = (): string => {
     return targetUrl
@@ -16,15 +18,18 @@ export const getTargetName = (): string => {
     return targetName
 }
 
-export const setTarget = (newTarget: string): void => {
+export const setTarget = (newTarget: string): boolean => {
     const newTargetUrl = targets[newTarget]
     if (!newTargetUrl) {
         // Not a valid target
         console.error('Not a valid target')
-        return
+        return false
     }
 
     targetName = newTarget
     targetUrl = newTargetUrl
     localStorage.setItem(localStorageName, newTarget)
+
+    // TODO: Log Out
+    return true
 }
