@@ -1,9 +1,21 @@
 const localStorageName = 'Krieg-API-Target'
 const targets = {
-    local: 'http://localhost:8080',
-    dev: 'https://dev.krieg.mistfireforge.com/api',
-    staging: 'https://staging.krieg.mistfireforge.com/api',
-    production: 'https://krieg.mistfireforge.com/api',
+    local: {
+        rest: 'http://localhost:8080',
+        ws: 'ws://localhost:8080/game',
+    },
+    dev: {
+        rest: 'https://dev.krieg.mistfireforge.com/api',
+        ws: 'wss://dev.krieg.mistfireforge.com/api/game',
+    },
+    staging: {
+        rest: 'https://staging.krieg.mistfireforge.com/api',
+        ws: 'wss://staging.krieg.mistfireforge.com/api/game',
+    },
+    production: {
+        rest: 'https://krieg.mistfireforge.com/api',
+        ws: 'wss://krieg.mistfireforge.com/api/game',
+    },
 }
 const saved = localStorage.getItem(localStorageName)
 
@@ -11,7 +23,11 @@ let targetName = saved ?? process.env.DEFAULT_TARGET
 let targetUrl = targets[targetName] ?? targets.production
 
 export const getTargetUrl = (): string => {
-    return targetUrl
+    return targetUrl.rest
+}
+
+export const getTargetWSUrl = (): string => {
+    return targetUrl.ws
 }
 
 export const getTargetName = (): string => {
