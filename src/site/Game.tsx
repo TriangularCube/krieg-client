@@ -3,7 +3,13 @@ import React, { FC, ReactElement, useEffect } from 'react'
 import { Container, Hidden, makeStyles, Typography } from '@material-ui/core'
 import * as Phaser from 'phaser'
 
-import { gameConfig, StartScene, StartSceneKey } from '../game/gameConfig'
+import {
+    gameConfig,
+    StartScene,
+    StartSceneKey,
+    MessageSystem,
+} from '../game/gameConfig'
+import { getTargetWSUrl } from '../util/apiTarget'
 
 const useStylesGame = makeStyles({
     container: {
@@ -49,21 +55,36 @@ const ActualGame: FC = (): ReactElement => {
     const classes = useStylesActual()
 
     useEffect(() => {
-        console.log('Starting Game Instance')
-        const game = new Phaser.Game(gameConfig)
+        let game: Phaser.Game
 
-        // This is a workaround to pass data into the Scene
-        // https://www.html5gamedevs.com/topic/38327-pass-custom-variable-into-phasergame/
-        // https://www.html5gamedevs.com/topic/36148-phaser-3-scene-phaser-2-state-passing-data-to-init-when-start/
-        game.scene.add(StartSceneKey, StartScene, false)
-        game.scene.start(StartSceneKey, {
-            map: {
-                terrain: [1, 2, 3],
-            },
-        })
+        const webConnection = new WebSocket(getTargetWSUrl())
+
+        webConnection.onopen = () => {
+            const messageSystem = new MessageSystem(webConnection)
+
+            console.log('Connected, starting Game Instance')
+            game = new Phaser.Game(gameConfig)
+
+            // This is a workaround to pass data into the Scene
+            // https://www.html5gamedevs.com/topic/38327-pass-custom-variable-into-phasergame/
+            // https://www.html5gamedevs.com/topic/36148-phaser-3-scene-phaser-2-state-passing-data-to-init-when-start/
+            game.scene.add(StartSceneKey, StartScene, false)
+            game.scene.start(StartSceneKey, {
+                messageSystem,
+            })
+
+            webConnection.onclose = () => {
+                console.log('Closed')
+            }
+
+            // Heartbeat event to prevent connection from closing
+            setInterval(() => {
+                messageSystem.sendNetworkMessage('heartbeat', null)
+            }, 20000)
+        }
 
         return () => {
-            game.destroy(true)
+            game?.destroy(true)
             console.log('Destroyed Game Instance')
         }
     }, [])
