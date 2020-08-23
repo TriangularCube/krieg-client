@@ -1,5 +1,6 @@
 import * as Phaser from 'phaser'
-import { MessageSystem, StartData } from '../gameConfig'
+import { MessageSystem, GameData } from '../gameDataInterface'
+import { Clamp } from '../utils/math'
 
 export class TestScene extends Phaser.Scene {
     private messageSystem: MessageSystem
@@ -7,7 +8,7 @@ export class TestScene extends Phaser.Scene {
     private keys
     private tile: Phaser.GameObjects.Sprite
 
-    public init(data: StartData): void {
+    public init(data: GameData): void {
         this.messageSystem = data.messageSystem
     }
 
@@ -46,7 +47,7 @@ export class TestScene extends Phaser.Scene {
 
         this.input.on('wheel', (pointer, currentlyOver, dx, dy) => {
             this.cameras.main.setZoom(
-                this.clamp((this.cameras.main.zoom -= dy / 1000), 0.5, 1)
+                Clamp((this.cameras.main.zoom -= dy / 1000), 0.5, 1)
             )
         })
     }
@@ -57,9 +58,5 @@ export class TestScene extends Phaser.Scene {
                 data: 'hi',
             })
         }
-    }
-
-    private clamp(num: number, min: number, max: number): number {
-        return Math.max(min, Math.min(num, max))
     }
 }

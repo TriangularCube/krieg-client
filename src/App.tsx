@@ -20,6 +20,7 @@ import { TargetSelection } from './site/TargetSelection'
 import { Login } from './site/account/Login'
 import { VerifyAccount } from './site/account/VerifyAccount'
 import { LogOut } from './site/account/LogOut'
+import { StartNewGame } from './site/StartNewGame'
 
 const App: FC = (): ReactElement => {
     return (
@@ -43,6 +44,9 @@ const App: FC = (): ReactElement => {
                         <VerifyAccount />
                     </Route>
 
+                    <Route path='/new-game'>
+                        <StartNewGame />
+                    </Route>
                     <Route path='/game'>
                         <Game />
                     </Route>

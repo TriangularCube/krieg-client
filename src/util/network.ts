@@ -1,4 +1,5 @@
 import { getTargetUrl } from './apiTarget'
+import { getAuthorizationToken } from './authorization'
 
 export interface NetworkMessage {
     success: boolean
@@ -8,28 +9,44 @@ export interface NetworkMessage {
     content?: Record<string, unknown>
 }
 
-export const registerUser = async (
-    displayName: string,
-    email: string,
-    password1: string,
-    password2: string
+export enum HTTPMethod {
+    GET = 'GET',
+    POST = 'POST',
+}
+
+export const sendMessage = async (
+    method: HTTPMethod,
+    path: string,
+    withAuth = false,
+    opt: Record<string, unknown> | null = null
 ): Promise<NetworkMessage> => {
     let response: NetworkMessage
-    try {
-        const result = await fetch(getTargetUrl() + '/register', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                displayName,
-                email,
-                password1,
-                password2,
-            }),
-        })
 
-        response = await result.json()
+    let authorizationToken = undefined
+
+    if (withAuth) {
+        authorizationToken = getAuthorizationToken()
+
+        if (authorizationToken == null) {
+            const result = await refreshToken()
+
+            if (result.success) {
+                authorizationToken = result.content.accessToken as string
+            } else {
+                // TODO
+            }
+        }
+
+        authorizationToken = 'Bearer ' + authorizationToken
+    }
+
+    try {
+        console.log('Initiating ' + path)
+        const result = await useFetch(method, path, authorizationToken, opt)
+
+        response = result
+
+        // TODO: If token expired
     } catch (err) {
         response = {
             success: false,
@@ -40,46 +57,25 @@ export const registerUser = async (
     return response
 }
 
-export const login = async (
-    email: string,
-    password: string
+const useFetch = async (
+    method: HTTPMethod,
+    path: string,
+    auth: string | undefined = undefined,
+    opt: Record<string, unknown> | null = null
 ): Promise<NetworkMessage> => {
-    let response: NetworkMessage
-    try {
-        const result = await fetch(getTargetUrl() + '/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                email,
-                password,
-            }),
-        })
+    const result = await fetch(getTargetUrl() + path, {
+        method,
+        headers: {
+            Authorization: auth,
+            'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        ...opt,
+    })
 
-        response = await result.json()
-    } catch (err) {
-        response = {
-            success: false,
-            error: err,
-        }
-    }
-
-    return response
+    return await result.json()
 }
 
 export const refreshToken = async (): Promise<NetworkMessage> => {
-    let response: NetworkMessage
-    try {
-        const result = await fetch(getTargetUrl() + '/refresh')
-
-        response = await result.json()
-    } catch (err) {
-        response = {
-            success: false,
-            error: err,
-        }
-    }
-
-    return response
+    return sendMessage(HTTPMethod.GET, '/refresh')
 }

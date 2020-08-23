@@ -1,8 +1,8 @@
 const localStorageName = 'Krieg-API-Target'
 const targets = {
     local: {
-        rest: 'http://localhost:8080',
-        ws: 'ws://localhost:8080/game',
+        rest: 'http://127.0.0.1:8080',
+        ws: 'ws://127.0.0.1:8080/game',
     },
     dev: {
         rest: 'https://dev.krieg.mistfireforge.com/api',

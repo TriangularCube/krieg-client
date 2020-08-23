@@ -3,12 +3,8 @@ import React, { FC, ReactElement, useEffect } from 'react'
 import { Container, Hidden, makeStyles, Typography } from '@material-ui/core'
 import * as Phaser from 'phaser'
 
-import {
-    gameConfig,
-    StartScene,
-    StartSceneKey,
-    MessageSystem,
-} from '../game/gameConfig'
+import { gameConfig, StartScene, StartSceneKey } from '../game/gameConfig'
+import { MessageSystem } from '../game/gameDataInterface'
 import { getTargetWSUrl } from '../util/apiTarget'
 
 const useStylesGame = makeStyles({

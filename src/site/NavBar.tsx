@@ -69,6 +69,10 @@ export const NavBar: FC = (): ReactElement => {
 
                 <div className={classes.spacer} />
 
+                <Button color='inherit' component={Link} to={'/new-game'}>
+                    Create Game
+                </Button>
+
                 <Button color='inherit' component={Link} to={'/game'}>
                     Game
                 </Button>

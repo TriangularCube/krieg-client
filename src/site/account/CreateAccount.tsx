@@ -1,5 +1,17 @@
-import React, { FC, ReactElement, useContext, useRef, useState } from 'react'
-import { Redirect, useHistory, useLocation } from 'react-router-dom'
+import React, { FC, ReactElement, useRef, useState } from 'react'
+import { Redirect, useHistory } from 'react-router-dom'
+
+import { useAsyncCallback } from 'react-async-hook'
+
+// Redux
+import { useDispatch } from 'react-redux'
+import { setLoginState } from '../../util/redux/actions'
+import { useLoginSelector } from '../../util/redux/reduxReducers'
+
+// Networking
+import { NetworkMessage } from '../../util/network'
+import { setAuthorizationToken } from '../../util/authorization'
+import { getTargetUrl } from '../../util/apiTarget'
 
 import {
     Avatar,
@@ -11,13 +23,6 @@ import {
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { Person } from '@material-ui/icons'
-
-import { registerUser } from '../../util/network'
-import { useAsyncCallback } from 'react-async-hook'
-import { setLoginState } from '../../util/redux/actions'
-import { useDispatch } from 'react-redux'
-import { useLoginSelector } from '../../util/redux/reduxReducers'
-import { setAuthorizationToken } from '../../util/authorization'
 
 enum SubmitError {
     passwordMatch,
@@ -146,4 +151,36 @@ export const CreateAccount: FC = (): ReactElement => {
             </Card>
         </Container>
     )
+}
+
+const registerUser = async (
+    displayName: string,
+    email: string,
+    password1: string,
+    password2: string
+): Promise<NetworkMessage> => {
+    let response: NetworkMessage
+    try {
+        const result = await fetch(getTargetUrl() + '/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                displayName,
+                email,
+                password1,
+                password2,
+            }),
+        })
+
+        response = await result.json()
+    } catch (err) {
+        response = {
+            success: false,
+            error: err,
+        }
+    }
+
+    return response
 }

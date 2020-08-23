@@ -2,11 +2,17 @@ import React, { FC, FormEvent, ReactElement, useRef } from 'react'
 import { Link as RouterLink, Redirect, useLocation } from 'react-router-dom'
 import { LocationState } from '../../util/LocationState'
 
+import { useAsyncCallback } from 'react-async-hook'
+
+// Redux
 import { useDispatch } from 'react-redux'
 import { useLoginSelector } from '../../util/redux/reduxReducers'
 import { setLoginState } from '../../util/redux/actions'
 
-import { useAsyncCallback } from 'react-async-hook'
+// Networking
+import { NetworkMessage } from '../../util/network'
+import { setAuthorizationToken } from '../../util/authorization'
+import { getTargetUrl } from '../../util/apiTarget'
 
 import {
     Avatar,
@@ -20,9 +26,6 @@ import {
 } from '@material-ui/core'
 import { LockOutlined } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/core/styles'
-
-import { login } from '../../util/network'
-import { setAuthorizationToken } from '../../util/authorization'
 
 const useStyles = makeStyles(theme => ({
     container: {
@@ -147,4 +150,33 @@ export const Login: FC = (): ReactElement => {
             </Card>
         </Container>
     )
+}
+
+const login = async (
+    email: string,
+    password: string
+): Promise<NetworkMessage> => {
+    let response: NetworkMessage
+    try {
+        const result = await fetch(getTargetUrl() + '/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+            body: JSON.stringify({
+                email,
+                password,
+            }),
+        })
+
+        response = await result.json()
+    } catch (err) {
+        response = {
+            success: false,
+            error: err,
+        }
+    }
+
+    return response
 }
