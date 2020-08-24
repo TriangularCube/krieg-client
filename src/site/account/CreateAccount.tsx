@@ -48,14 +48,10 @@ const useStyles = makeStyles(theme => ({
 
 export const CreateAccount: FC = (): ReactElement => {
     const isLoggedIn = useLoginSelector(state => state.isLoggedIn)
-    if (isLoggedIn) {
-        return <Redirect to='/' />
-    }
 
     const classes = useStyles()
 
     // region Form Submit
-    const history = useHistory()
     const [submitError, setSubmitError] = useState(null)
 
     const dispatch = useDispatch()
@@ -90,6 +86,10 @@ export const CreateAccount: FC = (): ReactElement => {
     }
     const asyncRegister = useAsyncCallback(registerAction)
     // endregion
+
+    if (isLoggedIn) {
+        return <Redirect to='/' />
+    }
 
     return (
         <Container maxWidth='sm'>

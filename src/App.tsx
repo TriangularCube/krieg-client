@@ -8,7 +8,7 @@ import {
 } from 'react-router-dom'
 
 import { Provider } from 'react-redux'
-import store from './util/redux/reduxStore'
+import { store } from './util/redux/reduxStore'
 
 import { CssBaseline } from '@material-ui/core'
 import { NavBar } from './site/NavBar'

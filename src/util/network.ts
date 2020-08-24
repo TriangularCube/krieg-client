@@ -1,10 +1,17 @@
+import { dispatch } from './redux/reduxStore'
+
 import { getTargetUrl } from './apiTarget'
-import { getAuthorizationToken } from './authorization'
+import { getAuthorizationToken, setAuthorizationToken } from './authorization'
+import { setLoginState } from './redux/actions'
+
+import { NetworkErrorCode } from '../../shared/MessageCodes.js'
 
 export interface NetworkMessage {
     success: boolean
     error?: {
-        message: string
+        code?: string
+        message?: string
+        content?: unknown
     }
     content?: Record<string, unknown>
 }
@@ -22,31 +29,62 @@ export const sendMessage = async (
 ): Promise<NetworkMessage> => {
     let response: NetworkMessage
 
-    let authorizationToken = undefined
-
+    let haveTriedRefresh = false
     if (withAuth) {
-        authorizationToken = getAuthorizationToken()
-
-        if (authorizationToken == null) {
-            const result = await refreshToken()
-
-            if (result.success) {
-                authorizationToken = result.content.accessToken as string
-            } else {
-                // TODO
+        if (getAuthorizationToken() === null) {
+            if (!(await refreshToken())) {
+                return {
+                    success: false,
+                    error: {
+                        message: 'Not logged in',
+                    },
+                }
             }
+            haveTriedRefresh = true
         }
-
-        authorizationToken = 'Bearer ' + authorizationToken
     }
 
     try {
         console.log('Initiating ' + path)
-        const result = await useFetch(method, path, authorizationToken, opt)
+        let result = await useFetch(method, path, getAuthorizationToken(), opt)
 
-        response = result
+        let content = await result.json()
 
-        // TODO: If token expired
+        if (!result.ok) {
+            // Some sort of network error
+            return {
+                success: false,
+                error: {
+                    code: 'Network Error', // TODO
+                    content,
+                },
+            }
+        }
+
+        if (
+            !content.success &&
+            withAuth &&
+            content.error.code === NetworkErrorCode.CouldNotVerifyToken &&
+            !haveTriedRefresh &&
+            (await refreshToken())
+        ) {
+            result = await useFetch(method, path, getAuthorizationToken(), opt)
+
+            content = await result.json()
+        }
+
+        if (!result.ok) {
+            // Some sort of network error
+            return {
+                success: false,
+                error: {
+                    code: 'Network Error', // TODO
+                    content,
+                },
+            }
+        }
+
+        response = content
     } catch (err) {
         response = {
             success: false,
@@ -62,20 +100,39 @@ const useFetch = async (
     path: string,
     auth: string | undefined = undefined,
     opt: Record<string, unknown> | null = null
-): Promise<NetworkMessage> => {
-    const result = await fetch(getTargetUrl() + path, {
+): Promise<Response> => {
+    return await fetch(getTargetUrl() + path, {
         method,
         headers: {
-            Authorization: auth,
+            Authorization: `Bearer ${auth}`,
             'Content-Type': 'application/json',
         },
         credentials: 'include',
         ...opt,
     })
-
-    return await result.json()
 }
 
-export const refreshToken = async (): Promise<NetworkMessage> => {
-    return sendMessage(HTTPMethod.GET, '/refresh')
+const refreshToken = async (): Promise<boolean> => {
+    const fetchResult = await useFetch(HTTPMethod.GET, '/refresh')
+
+    if (fetchResult.ok) {
+        const resultJSON = await fetchResult.json()
+        if (resultJSON.success) {
+            setAuthorizationToken(resultJSON.content.accessToken)
+            return true
+        } else if (
+            resultJSON.content.error.code ===
+            NetworkErrorCode.CouldNotVerifyToken
+        ) {
+            // Initiate Logout
+            setAuthorizationToken(null)
+            dispatch(setLoginState(false))
+            return false
+        }
+    }
+
+    console.log('Error while refreshing token')
+    // TODO
+
+    return false
 }

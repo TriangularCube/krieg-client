@@ -1,5 +1,6 @@
 import React, { FC, ReactElement } from 'react'
 import { Link } from 'react-router-dom'
+import { useLoginSelector } from '../util/redux/reduxReducers'
 
 import {
     makeStyles,
@@ -20,9 +21,6 @@ import {
     bindTrigger,
     bindMenu,
 } from 'material-ui-popup-state/hooks'
-import { useLoginSelector } from '../util/redux/reduxReducers'
-import { useDispatch } from 'react-redux'
-import { setLoginState } from '../util/redux/actions'
 
 const useStyles = makeStyles(theme => ({
     menuButton: {

@@ -1,6 +1,5 @@
 import { createStore, combineReducers } from 'redux'
 import { RootReducer } from './reduxReducers'
 
-const store = createStore(combineReducers(RootReducer))
-
-export default store
+export const store = createStore(combineReducers(RootReducer))
+export const dispatch = store.dispatch
