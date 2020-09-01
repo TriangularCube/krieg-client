@@ -75,6 +75,8 @@ export const Login: FC = (): ReactElement => {
         )
 
         if (res.success) {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
             setAuthorizationToken(res.content.accessToken as string)
             dispatch(setLoginState(true))
         } else {

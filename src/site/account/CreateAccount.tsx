@@ -1,5 +1,5 @@
 import React, { FC, ReactElement, useRef, useState } from 'react'
-import { Redirect, useHistory } from 'react-router-dom'
+import { Redirect } from 'react-router-dom'
 
 import { useAsyncCallback } from 'react-async-hook'
 
@@ -9,17 +9,17 @@ import { setLoginState } from '../../util/redux/actions'
 import { useLoginSelector } from '../../util/redux/reduxReducers'
 
 // Networking
-import { NetworkMessage } from '../../util/network'
-import { setAuthorizationToken } from '../../util/authorization'
+import { HTTPMethod, NetworkMessage, sendMessage } from '../../util/network'
 import { getTargetUrl } from '../../util/apiTarget'
+import { setAuthorizationToken } from '../../util/authorization'
 
 import {
     Avatar,
-    Container,
-    Typography,
-    Card,
-    TextField,
     Button,
+    Card,
+    Container,
+    TextField,
+    Typography,
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { Person } from '@material-ui/icons'
@@ -77,6 +77,8 @@ export const CreateAccount: FC = (): ReactElement => {
         )
 
         if (res.success) {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
             setAuthorizationToken(res.content.accessToken as string)
             dispatch(setLoginState(true))
             // history.push('/verify-account')
@@ -159,28 +161,24 @@ const registerUser = async (
     password1: string,
     password2: string
 ): Promise<NetworkMessage> => {
-    let response: NetworkMessage
     try {
-        const result = await fetch(getTargetUrl() + '/register', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                displayName,
-                email,
-                password1,
-                password2,
-            }),
-        })
-
-        response = await result.json()
+        return await sendMessage(
+            HTTPMethod.POST,
+            getTargetUrl() + '/register',
+            false,
+            {
+                body: JSON.stringify({
+                    displayName,
+                    email,
+                    password1,
+                    password2,
+                }),
+            }
+        )
     } catch (err) {
-        response = {
+        return {
             success: false,
             error: err,
         }
     }
-
-    return response
 }

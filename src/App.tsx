@@ -13,14 +13,14 @@ import { store } from './util/redux/reduxStore'
 import { CssBaseline } from '@material-ui/core'
 import { NavBar } from './site/NavBar'
 import { Splash } from './site/Splash'
-import { Game } from './site/Game'
+import { GamePage } from './site/gamePage/GamePage'
 import { CreateAccount } from './site/account/CreateAccount'
 import { NotFound } from './site/NotFound'
 import { TargetSelection } from './site/TargetSelection'
 import { Login } from './site/account/Login'
 import { VerifyAccount } from './site/account/VerifyAccount'
 import { LogOut } from './site/account/LogOut'
-import { StartNewGame } from './site/StartNewGame'
+import { CreateNewGame } from './site/CreateNewGame'
 
 const App: FC = (): ReactElement => {
     return (
@@ -44,11 +44,11 @@ const App: FC = (): ReactElement => {
                         <VerifyAccount />
                     </Route>
 
-                    <Route path='/new-game'>
-                        <StartNewGame />
+                    <Route path='/create-new-game'>
+                        <CreateNewGame />
                     </Route>
-                    <Route path='/game'>
-                        <Game />
+                    <Route path='/game/:gameId'>
+                        <GamePage />
                     </Route>
 
                     <Route path='/target-select'>

@@ -47,7 +47,7 @@ export class TestScene extends Phaser.Scene {
 
         this.input.on('wheel', (pointer, currentlyOver, dx, dy) => {
             this.cameras.main.setZoom(
-                Clamp((this.cameras.main.zoom -= dy / 1000), 0.5, 1)
+                Clamp((this.cameras.main.zoom -= dy / 100), 0.5, 1)
             )
         })
     }

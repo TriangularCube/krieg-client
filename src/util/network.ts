@@ -1,10 +1,10 @@
 import { dispatch } from './redux/reduxStore'
 
 import { getTargetUrl } from './apiTarget'
-import { getAuthorizationToken, setAuthorizationToken } from './authorization'
 import { setLoginState } from './redux/actions'
 
 import { NetworkErrorCode } from '../../shared/MessageCodes.js'
+import { getAuthorizationToken, setAuthorizationToken } from './authorization'
 
 export interface NetworkMessage {
     success: boolean
@@ -13,7 +13,7 @@ export interface NetworkMessage {
         message?: string
         content?: unknown
     }
-    content?: Record<string, unknown>
+    content?: unknown
 }
 
 export enum HTTPMethod {
@@ -29,24 +29,9 @@ export const sendMessage = async (
 ): Promise<NetworkMessage> => {
     let response: NetworkMessage
 
-    let haveTriedRefresh = false
-    if (withAuth) {
-        if (getAuthorizationToken() === null) {
-            if (!(await refreshToken())) {
-                return {
-                    success: false,
-                    error: {
-                        message: 'Not logged in',
-                    },
-                }
-            }
-            haveTriedRefresh = true
-        }
-    }
-
     try {
         console.log('Initiating ' + path)
-        let result = await useFetch(method, path, getAuthorizationToken(), opt)
+        let result = await useFetch(method, path, withAuth, opt)
 
         let content = await result.json()
 
@@ -65,10 +50,9 @@ export const sendMessage = async (
             !content.success &&
             withAuth &&
             content.error.code === NetworkErrorCode.CouldNotVerifyToken &&
-            !haveTriedRefresh &&
             (await refreshToken())
         ) {
-            result = await useFetch(method, path, getAuthorizationToken(), opt)
+            result = await useFetch(method, path, withAuth, opt)
 
             content = await result.json()
         }
@@ -98,21 +82,24 @@ export const sendMessage = async (
 const useFetch = async (
     method: HTTPMethod,
     path: string,
-    auth: string | undefined = undefined,
-    opt: Record<string, unknown> | null = null
+    withAuth = false,
+    { headers, ...rest }: Record<string, unknown> = { headers: null }
 ): Promise<Response> => {
     return await fetch(getTargetUrl() + path, {
         method,
         headers: {
-            Authorization: `Bearer ${auth}`,
             'Content-Type': 'application/json',
+            Authorization: withAuth
+                ? `Bearer ${getAuthorizationToken()}`
+                : undefined,
+            ...(headers as Record<string, unknown>),
         },
         credentials: 'include',
-        ...opt,
+        ...rest,
     })
 }
 
-const refreshToken = async (): Promise<boolean> => {
+export const refreshToken = async (): Promise<boolean> => {
     const fetchResult = await useFetch(HTTPMethod.GET, '/refresh')
 
     if (fetchResult.ok) {
@@ -125,7 +112,6 @@ const refreshToken = async (): Promise<boolean> => {
             NetworkErrorCode.CouldNotVerifyToken
         ) {
             // Initiate Logout
-            setAuthorizationToken(null)
             dispatch(setLoginState(false))
             return false
         }

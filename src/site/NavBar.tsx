@@ -67,15 +67,16 @@ export const NavBar: FC = (): ReactElement => {
 
                 <div className={classes.spacer} />
 
-                <Button color='inherit' component={Link} to={'/new-game'}>
+                <Button color='inherit' component={Link} to='/create-new-game'>
                     Create Game
                 </Button>
 
-                <Button color='inherit' component={Link} to={'/game'}>
+                <Button color='inherit' component={Link} to='/game/123'>
+                    {/* TODO */}
                     Game
                 </Button>
 
-                <Button color='inherit' component={Link} to={'/about'}>
+                <Button color='inherit' component={Link} to='/about'>
                     About
                 </Button>
                 {/* User button */}
