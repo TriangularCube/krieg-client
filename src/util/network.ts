@@ -24,14 +24,15 @@ export enum HTTPMethod {
 export const sendMessage = async (
     method: HTTPMethod,
     path: string,
+    body: Record<string, unknown> = undefined,
     withAuth = false,
-    opt: Record<string, unknown> | null = null
+    opt: Record<string, unknown> = undefined
 ): Promise<NetworkMessage> => {
     let response: NetworkMessage
 
     try {
         console.log('Initiating ' + path)
-        let result = await useFetch(method, path, withAuth, opt)
+        let result = await useFetch(method, path, body, withAuth, opt)
 
         let content = await result.json()
 
@@ -52,7 +53,7 @@ export const sendMessage = async (
             content.error.code === NetworkErrorCode.CouldNotVerifyToken &&
             (await refreshToken())
         ) {
-            result = await useFetch(method, path, withAuth, opt)
+            result = await useFetch(method, path, body, withAuth, opt)
 
             content = await result.json()
         }
@@ -82,11 +83,13 @@ export const sendMessage = async (
 const useFetch = async (
     method: HTTPMethod,
     path: string,
+    body: Record<string, unknown> = undefined,
     withAuth = false,
     { headers, ...rest }: Record<string, unknown> = { headers: null }
 ): Promise<Response> => {
     return await fetch(getTargetUrl() + path, {
         method,
+        credentials: 'include',
         headers: {
             'Content-Type': 'application/json',
             Authorization: withAuth
@@ -94,7 +97,7 @@ const useFetch = async (
                 : undefined,
             ...(headers as Record<string, unknown>),
         },
-        credentials: 'include',
+        body: body ? JSON.stringify(body) : undefined,
         ...rest,
     })
 }
@@ -108,8 +111,7 @@ export const refreshToken = async (): Promise<boolean> => {
             setAuthorizationToken(resultJSON.content.accessToken)
             return true
         } else if (
-            resultJSON.content.error.code ===
-            NetworkErrorCode.CouldNotVerifyToken
+            resultJSON.error.code === NetworkErrorCode.CouldNotVerifyToken
         ) {
             // Initiate Logout
             dispatch(setLoginState(false))

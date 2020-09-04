@@ -1,4 +1,5 @@
 import EventEmitter from 'eventemitter3'
+import { GameSetupCode } from '../../shared/MessageCodes'
 
 export interface GameData {
     messageSystem: MessageSystem
@@ -8,7 +9,7 @@ export class MessageSystem {
     private wsConnection: WebSocket
     private eventEmitter: EventEmitter
 
-    private readonly heartbeatInterval: NodeJS.Timeout
+    private heartbeatInterval: NodeJS.Timeout
     private heartbeatMissed: number
 
     constructor(ws: WebSocket) {
@@ -21,18 +22,9 @@ export class MessageSystem {
             this.eventEmitter.emit(message.eventName, message.data)
         }
 
-        this.heartbeatInterval = setInterval(() => {
-            if (this.heartbeatMissed > 4) {
-                this.eventEmitter.emit('--connection dropped--', null)
-                this.destroy()
-                return
-            }
-            ++this.heartbeatMissed
-            this.sendNetworkMessage('--heartbeat--', null)
-        }, 5000)
-        this.registerListener('--heartbeat--', () => {
-            this.heartbeatMissed = 0
-        })
+        this.handleHeartbeat()
+
+        // TODO Handle get User Info
     }
 
     public registerListener(
@@ -51,7 +43,7 @@ export class MessageSystem {
 
     public sendNetworkMessage(
         eventName: string,
-        message: Record<string, unknown>
+        message: Record<string, unknown> | null
     ): void {
         this.wsConnection.send(
             JSON.stringify({
@@ -61,9 +53,24 @@ export class MessageSystem {
         )
     }
 
-    public destroy() {
+    public destroy(): void {
         this.eventEmitter = null
         this.wsConnection.close()
         clearInterval(this.heartbeatInterval)
+    }
+
+    private handleHeartbeat(): void {
+        this.heartbeatInterval = setInterval(() => {
+            if (this.heartbeatMissed > 4) {
+                this.eventEmitter.emit(GameSetupCode.ConnectionDropped, null)
+                this.destroy()
+                return
+            }
+            ++this.heartbeatMissed
+            this.sendNetworkMessage(GameSetupCode.Heartbeat, null)
+        }, 5000)
+        this.registerListener(GameSetupCode.Heartbeat, () => {
+            this.heartbeatMissed = 0
+        })
     }
 }

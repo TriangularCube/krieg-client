@@ -165,14 +165,11 @@ const registerUser = async (
         return await sendMessage(
             HTTPMethod.POST,
             getTargetUrl() + '/register',
-            false,
             {
-                body: JSON.stringify({
-                    displayName,
-                    email,
-                    password1,
-                    password2,
-                }),
+                displayName,
+                email,
+                password1,
+                password2,
             }
         )
     } catch (err) {
