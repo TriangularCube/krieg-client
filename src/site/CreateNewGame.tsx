@@ -47,10 +47,10 @@ export const CreateNewGame: FC = (): ReactElement => {
         const result = (await sendMessage(
             HTTPMethod.POST,
             '/create-new-game',
+            true,
             {
                 gameName: gameNameRef.current.value,
-            },
-            true
+            }
         )) as NewGameMessage
 
         history.push(`/game/${result.content.gameId}`)

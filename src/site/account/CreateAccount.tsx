@@ -165,6 +165,7 @@ const registerUser = async (
         return await sendMessage(
             HTTPMethod.POST,
             getTargetUrl() + '/register',
+            false,
             {
                 displayName,
                 email,

@@ -80,6 +80,10 @@ export const NavBar: FC = (): ReactElement => {
                     Game
                 </Button>
 
+                <Button color='inherit' component={Link} to='/my-games-list'>
+                    Games List
+                </Button>
+
                 <Button color='inherit' component={Link} to='/about'>
                     About
                 </Button>

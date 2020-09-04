@@ -21,6 +21,7 @@ import { Login } from './site/account/Login'
 import { VerifyAccount } from './site/account/VerifyAccount'
 import { LogOut } from './site/account/LogOut'
 import { CreateNewGame } from './site/CreateNewGame'
+import { MyGamesList } from './site/playing/MyGamesList'
 
 const App: FC = (): ReactElement => {
     return (
@@ -42,6 +43,10 @@ const App: FC = (): ReactElement => {
                     </Route>
                     <Route exact path='/verify-account'>
                         <VerifyAccount />
+                    </Route>
+
+                    <Route path='/my-games-list'>
+                        <MyGamesList />
                     </Route>
 
                     <Route path='/create-new-game'>

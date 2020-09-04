@@ -53,10 +53,10 @@ export const GameConnection: FC = (): ReactElement => {
             const result = (await sendMessage(
                 HTTPMethod.POST,
                 '/get-join-token',
+                true,
                 {
                     gameId,
-                },
-                true
+                }
             )) as GetTokenResult
             if (!result.success) {
                 console.log(result)
@@ -78,10 +78,10 @@ export const GameConnection: FC = (): ReactElement => {
                 const result = (await sendMessage(
                     HTTPMethod.POST,
                     '/get-join-error',
+                    true,
                     {
                         token: joinToken,
-                    },
-                    true
+                    }
                 )) as GetErrorResult
                 console.log(result)
 

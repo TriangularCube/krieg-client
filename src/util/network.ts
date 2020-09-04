@@ -24,8 +24,8 @@ export enum HTTPMethod {
 export const sendMessage = async (
     method: HTTPMethod,
     path: string,
-    body: Record<string, unknown> = undefined,
     withAuth = false,
+    body: Record<string, unknown> = undefined,
     opt: Record<string, unknown> = undefined
 ): Promise<NetworkMessage> => {
     let response: NetworkMessage
