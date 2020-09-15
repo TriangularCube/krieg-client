@@ -10,19 +10,18 @@ import { useLoginSelector } from '../../util/redux/reduxReducers'
 import { setLoginState } from '../../util/redux/actions'
 
 // Networking
-import { NetworkMessage } from '../../util/network'
+import { HTTPMethod, NetworkMessage, sendMessage } from '../../util/network'
 import { setAuthorizationToken } from '../../util/authorization'
-import { getTargetUrl } from '../../util/apiTarget'
 
 import {
     Avatar,
     Button,
     Card,
+    CircularProgress as Progress,
     Container,
+    Link,
     TextField,
     Typography,
-    Link,
-    CircularProgress as Progress,
 } from '@material-ui/core'
 import { LockOutlined } from '@material-ui/icons'
 import { makeStyles } from '@material-ui/core/styles'
@@ -160,19 +159,10 @@ const login = async (
 ): Promise<NetworkMessage> => {
     let response: NetworkMessage
     try {
-        const result = await fetch(getTargetUrl() + '/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            credentials: 'include',
-            body: JSON.stringify({
-                email,
-                password,
-            }),
+        return sendMessage(HTTPMethod.POST, '/login', false, {
+            email,
+            password,
         })
-
-        response = await result.json()
     } catch (err) {
         response = {
             success: false,

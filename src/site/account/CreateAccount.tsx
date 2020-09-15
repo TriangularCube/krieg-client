@@ -162,17 +162,12 @@ const registerUser = async (
     password2: string
 ): Promise<NetworkMessage> => {
     try {
-        return await sendMessage(
-            HTTPMethod.POST,
-            getTargetUrl() + '/register',
-            false,
-            {
-                displayName,
-                email,
-                password1,
-                password2,
-            }
-        )
+        return await sendMessage(HTTPMethod.POST, '/create-account', false, {
+            displayName,
+            email,
+            password1,
+            password2,
+        })
     } catch (err) {
         return {
             success: false,
