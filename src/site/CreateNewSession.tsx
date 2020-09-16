@@ -18,7 +18,7 @@ import { makeStyles } from '@material-ui/core/styles'
 
 interface NewGameMessage extends NetworkMessage {
     content: {
-        gameId: number
+        sessionId: number
     }
 }
 
@@ -35,12 +35,12 @@ const useStyles = makeStyles(theme => ({
     },
 }))
 
-export const CreateNewGame: FC = (): ReactElement => {
+export const CreateNewSession: FC = (): ReactElement => {
     const isLoggedIn = useLoginSelector(state => state.isLoggedIn)
 
     const classes = useStyles()
 
-    const gameNameRef = useRef(null)
+    const sessionNameRef = useRef(null)
 
     const history = useHistory()
     const startGameAction = async () => {
@@ -49,11 +49,11 @@ export const CreateNewGame: FC = (): ReactElement => {
             '/create-new-game',
             true,
             {
-                gameName: gameNameRef.current.value,
+                sessionName: sessionNameRef.current.value,
             }
         )) as NewGameMessage
 
-        history.push(`/game/${result.content.gameId}`)
+        history.push(`/game/${result.content.sessionId}`)
     }
     const asyncStart = useAsyncCallback(startGameAction)
     const handleStart = event => {
@@ -78,7 +78,7 @@ export const CreateNewGame: FC = (): ReactElement => {
                         label='Game Name'
                         name='game-name'
                         id='game-name'
-                        inputRef={gameNameRef}
+                        inputRef={sessionNameRef}
                     />
                     <Button
                         className={classes.submit}

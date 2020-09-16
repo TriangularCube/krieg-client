@@ -17,7 +17,9 @@ const useStyles = makeStyles({
         maxHeight: 720,
     },
 })
-export const GameDisplay: FC<GameProps> = ({ messageSystem }): ReactElement => {
+export const SessionDisplay: FC<GameProps> = ({
+    messageSystem,
+}): ReactElement => {
     const classes = useStyles()
 
     useEffect(() => {
@@ -39,6 +41,6 @@ export const GameDisplay: FC<GameProps> = ({ messageSystem }): ReactElement => {
     return <div id='game-root' className={classes.root} />
 }
 
-GameDisplay.propTypes = {
+SessionDisplay.propTypes = {
     messageSystem: PropTypes.instanceOf(MessageSystem),
 }

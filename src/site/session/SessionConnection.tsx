@@ -7,7 +7,7 @@ import { getTargetWSUrl } from '../../util/apiTarget'
 import { HTTPMethod, NetworkMessage, sendMessage } from '../../util/network'
 
 import { MessageSystem } from '../../game/gameDataInterface'
-import { GameDisplay } from './GameDisplay'
+import { SessionDisplay } from './SessionDisplay'
 
 import { GameSetupCode } from '../../../shared/MessageCodes'
 
@@ -22,21 +22,21 @@ interface GetErrorResult extends NetworkMessage {
     }
 }
 
-const GameState = {
+const SessionState = {
     Loading: 'loading',
     Active: 'active',
     Error: 'error',
     Dropped: 'dropped',
 }
 
-export const GameConnection: FC = (): ReactElement => {
-    const { gameId } = useParams()
+export const SessionConnection: FC = (): ReactElement => {
+    const { sessionId } = useParams()
 
     const [gameState, dispatchGameState] = useReducer(
         (state, newState) => {
             return newState
         },
-        { state: GameState.Loading }
+        { state: SessionState.Loading }
     )
 
     useEffect(() => {
@@ -55,13 +55,13 @@ export const GameConnection: FC = (): ReactElement => {
                 '/get-join-token',
                 true,
                 {
-                    gameId,
+                    sessionId,
                 }
             )) as GetTokenResult
             if (!result.success) {
                 console.log(result)
                 dispatchGameState({
-                    state: GameState.Error,
+                    state: SessionState.Error,
                     error: result.error,
                 })
                 return
@@ -85,13 +85,13 @@ export const GameConnection: FC = (): ReactElement => {
                 )) as GetErrorResult
                 console.log(result)
 
-                dispatchGameState({ state: GameState.Error })
+                dispatchGameState({ state: SessionState.Error })
             }
 
             webConnection.onopen = () => {
                 webConnection.onclose = () => {
                     cleanUp()
-                    dispatchGameState({ state: GameState.Dropped })
+                    dispatchGameState({ state: SessionState.Dropped })
                 }
 
                 messageSystem = new MessageSystem(webConnection)
@@ -100,15 +100,15 @@ export const GameConnection: FC = (): ReactElement => {
                     GameSetupCode.ConnectionDropped,
                     () => {
                         cleanUp()
-                        dispatchGameState({ state: GameState.Dropped })
+                        dispatchGameState({ state: SessionState.Dropped })
                     }
                 )
 
                 const connectTimeout = setTimeout(() => {
-                    if (gameState.state === GameState.Loading) {
+                    if (gameState.state === SessionState.Loading) {
                         // We're taking too long, something's wrong
                         cleanUp()
-                        dispatchGameState({ state: GameState.Dropped })
+                        dispatchGameState({ state: SessionState.Dropped })
                     }
                 }, 10000) // 10 Seconds
 
@@ -117,7 +117,7 @@ export const GameConnection: FC = (): ReactElement => {
                     () => {
                         clearTimeout(connectTimeout)
                         dispatchGameState({
-                            state: GameState.Active,
+                            state: SessionState.Active,
                             messageSystem: messageSystem,
                         })
                     }
@@ -133,13 +133,13 @@ export const GameConnection: FC = (): ReactElement => {
     // TODO Auto Reconnect Feature after dropped connection
 
     switch (gameState.state) {
-        case GameState.Loading:
+        case SessionState.Loading:
             return <CircularProgress />
-        case GameState.Active:
-            return <GameDisplay messageSystem={gameState.messageSystem} />
-        case GameState.Dropped:
+        case SessionState.Active:
+            return <SessionDisplay messageSystem={gameState.messageSystem} />
+        case SessionState.Dropped:
             return <Typography>Connection Lost</Typography>
-        case GameState.Error:
+        case SessionState.Error:
         default:
             // TODO Refresh, then possibly log out
             return <Typography>There has been an error</Typography>

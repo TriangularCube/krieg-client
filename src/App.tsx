@@ -13,14 +13,14 @@ import { store } from './util/redux/reduxStore'
 import { CssBaseline } from '@material-ui/core'
 import { NavBar } from './site/NavBar'
 import { Splash } from './site/Splash'
-import { GamePage } from './site/gamePage/GamePage'
+import { SessionPage } from './site/session/SessionPage'
 import { CreateAccount } from './site/account/CreateAccount'
 import { NotFound } from './site/NotFound'
 import { TargetSelection } from './site/TargetSelection'
 import { Login } from './site/account/Login'
 import { VerifyAccount } from './site/account/VerifyAccount'
 import { LogOut } from './site/account/LogOut'
-import { CreateNewGame } from './site/CreateNewGame'
+import { CreateNewSession } from './site/CreateNewSession'
 import { MyGamesList } from './site/playing/MyGamesList'
 
 const App: FC = (): ReactElement => {
@@ -50,10 +50,10 @@ const App: FC = (): ReactElement => {
                     </Route>
 
                     <Route path='/create-new-game'>
-                        <CreateNewGame />
+                        <CreateNewSession />
                     </Route>
-                    <Route path='/game/:gameId'>
-                        <GamePage />
+                    <Route path='/session/:sessionId'>
+                        <SessionPage />
                     </Route>
 
                     <Route path='/target-select'>

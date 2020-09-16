@@ -74,7 +74,7 @@ export const NavBar: FC = (): ReactElement => {
                 <Button
                     color='inherit'
                     component={Link}
-                    to='/game/275513313866023432'
+                    to='/session/276779940475568653'
                 >
                     {/* TODO */}
                     Game

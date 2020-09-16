@@ -4,7 +4,7 @@ import { Redirect, useParams } from 'react-router-dom'
 import { Container, Hidden, makeStyles, Typography } from '@material-ui/core'
 
 import { useLoginSelector } from '../../util/redux/reduxReducers'
-import { GameConnection } from './GameConnection'
+import { SessionConnection } from './SessionConnection'
 
 const useStyles = makeStyles({
     container: {
@@ -14,17 +14,17 @@ const useStyles = makeStyles({
         marginTop: 30,
     },
 })
-export const GamePage: FC = (): ReactElement => {
+export const SessionPage: FC = (): ReactElement => {
     const classes = useStyles()
     const isLoggedIn = useLoginSelector(state => state.isLoggedIn)
-    const { gameId } = useParams()
+    const { sessionId } = useParams()
 
     if (!isLoggedIn) {
         console.log('Not logged in')
         return <Redirect to='/' />
     }
 
-    if (!gameId) {
+    if (!sessionId) {
         console.log('No Game ID')
         return <Redirect to='/' />
     }
@@ -35,7 +35,7 @@ export const GamePage: FC = (): ReactElement => {
 
             <Hidden smDown implementation='js'>
                 {/* Make sure this uses JS implementation to deactivate game properly */}
-                <GameConnection />
+                <SessionConnection />
 
                 <div style={{ marginTop: 10 }}>
                     <Typography>Controller stuff?</Typography>
