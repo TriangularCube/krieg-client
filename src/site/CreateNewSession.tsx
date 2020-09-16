@@ -46,14 +46,14 @@ export const CreateNewSession: FC = (): ReactElement => {
     const startGameAction = async () => {
         const result = (await sendMessage(
             HTTPMethod.POST,
-            '/create-new-game',
+            '/create-new-session',
             true,
             {
                 sessionName: sessionNameRef.current.value,
             }
         )) as NewGameMessage
 
-        history.push(`/game/${result.content.sessionId}`)
+        history.push(`/session/${result.content.sessionId}`)
     }
     const asyncStart = useAsyncCallback(startGameAction)
     const handleStart = event => {
