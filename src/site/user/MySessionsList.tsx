@@ -12,7 +12,7 @@ const useStyles = makeStyles(theme => ({
         alignItems: 'center',
     },
 }))
-export const MyGamesList: FC = (): ReactElement => {
+export const MySessionsList: FC = (): ReactElement => {
     const classes = useStyles()
     const [state, setState] = useReducer(
         (state, newState) => {
@@ -26,7 +26,7 @@ export const MyGamesList: FC = (): ReactElement => {
         const asyncGet = async () => {
             const result = await sendMessage(
                 HTTPMethod.GET,
-                '/my-games-list',
+                '/my-sessions-list',
                 true
             )
 

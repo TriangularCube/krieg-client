@@ -20,10 +20,23 @@ import { TargetSelection } from './site/TargetSelection'
 import { Login } from './site/account/Login'
 import { VerifyAccount } from './site/account/VerifyAccount'
 import { LogOut } from './site/account/LogOut'
-import { CreateNewSession } from './site/CreateNewSession'
-import { MyGamesList } from './site/playing/MyGamesList'
+import { CreateSession } from './site/user/CreateSession'
+import { MySessionsList } from './site/user/MySessionsList'
+import { MyMapsList } from './site/user/MyMapsList'
+import { makeStyles } from '@material-ui/core/styles'
+import { Footer } from './site/Footer'
+
+const useStyles = makeStyles({
+    siteContent: {
+        flex: '1 0 auto',
+        margin: 8,
+        marginBottom: 32,
+    },
+})
 
 const App: FC = (): ReactElement => {
+    const classes = useStyles()
+
     return (
         <Provider store={store}>
             <CssBaseline />
@@ -31,45 +44,51 @@ const App: FC = (): ReactElement => {
             <Router>
                 <NavBar />
 
-                <Switch>
-                    <Route exact path='/create-account'>
-                        <CreateAccount />
-                    </Route>
-                    <Route exact path='/login'>
-                        <Login />
-                    </Route>
-                    <Route exact path='/logout'>
-                        <LogOut />
-                    </Route>
-                    <Route exact path='/verify-account'>
-                        <VerifyAccount />
-                    </Route>
+                <main className={classes.siteContent}>
+                    <Switch>
+                        <Route exact path='/create-account'>
+                            <CreateAccount />
+                        </Route>
+                        <Route exact path='/login'>
+                            <Login />
+                        </Route>
+                        <Route exact path='/logout'>
+                            <LogOut />
+                        </Route>
+                        <Route exact path='/verify-account'>
+                            <VerifyAccount />
+                        </Route>
 
-                    <Route path='/my-games-list'>
-                        <MyGamesList />
-                    </Route>
+                        <Route path='/my-maps-list'>
+                            <MyMapsList />
+                        </Route>
 
-                    <Route path='/create-new-game'>
-                        <CreateNewSession />
-                    </Route>
-                    <Route path='/session/:sessionId'>
-                        <SessionPage />
-                    </Route>
+                        <Route path='/create-session'>
+                            <CreateSession />
+                        </Route>
+                        <Route path='/session/:sessionId'>
+                            <SessionPage />
+                        </Route>
+                        <Route path='/my-sessions-list'>
+                            <MySessionsList />
+                        </Route>
 
-                    <Route path='/target-select'>
-                        <TargetSelection />
-                    </Route>
+                        <Route path='/target-select'>
+                            <TargetSelection />
+                        </Route>
 
-                    <Route exact path='/'>
-                        <Splash />
-                    </Route>
-                    <Route path='/404'>
-                        <NotFound />
-                    </Route>
+                        <Route exact path='/'>
+                            <Splash />
+                        </Route>
+                        <Route path='/404'>
+                            <NotFound />
+                        </Route>
 
-                    {/* Redirect in case of bad address */}
-                    <Redirect to='/404' />
-                </Switch>
+                        {/* Redirect in case of bad address */}
+                        <Redirect to='/404' />
+                    </Switch>
+                </main>
+                <Footer />
             </Router>
         </Provider>
     )

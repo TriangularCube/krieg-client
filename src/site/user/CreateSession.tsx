@@ -1,10 +1,10 @@
 import React, { FC, ReactElement, useRef } from 'react'
 import { Redirect, useHistory } from 'react-router-dom'
 
-import { useLoginSelector } from '../util/redux/reduxReducers'
+import { useLoginSelector } from '../../util/redux/reduxReducers'
 import { useAsyncCallback } from 'react-async-hook'
 
-import { HTTPMethod, NetworkMessage, sendMessage } from '../util/network'
+import { HTTPMethod, NetworkMessage, sendMessage } from '../../util/network'
 
 import {
     Button,
@@ -35,7 +35,7 @@ const useStyles = makeStyles(theme => ({
     },
 }))
 
-export const CreateNewSession: FC = (): ReactElement => {
+export const CreateSession: FC = (): ReactElement => {
     const isLoggedIn = useLoginSelector(state => state.isLoggedIn)
 
     const classes = useStyles()
@@ -46,7 +46,7 @@ export const CreateNewSession: FC = (): ReactElement => {
     const startGameAction = async () => {
         const result = (await sendMessage(
             HTTPMethod.POST,
-            '/create-new-session',
+            '/create-session',
             true,
             {
                 sessionName: sessionNameRef.current.value,
@@ -69,7 +69,7 @@ export const CreateNewSession: FC = (): ReactElement => {
         <Container maxWidth='sm'>
             <Card className={classes.container}>
                 <Typography variant='h4' color='primary'>
-                    Create New Game
+                    New Session
                 </Typography>
                 <form onSubmit={handleStart}>
                     <TextField
@@ -89,7 +89,7 @@ export const CreateNewSession: FC = (): ReactElement => {
                         {asyncStart.loading ? (
                             <CircularProgress color='secondary' />
                         ) : (
-                            'Start New Game'
+                            'Create'
                         )}
                     </Button>
                 </form>

@@ -67,21 +67,12 @@ export const NavBar: FC = (): ReactElement => {
 
                 <div className={classes.spacer} />
 
-                <Button color='inherit' component={Link} to='/create-new-game'>
-                    Create Game
+                <Button color='inherit' component={Link} to='/create-session'>
+                    Create Session
                 </Button>
 
-                <Button
-                    color='inherit'
-                    component={Link}
-                    to='/session/276779940475568653'
-                >
-                    {/* TODO */}
-                    Game
-                </Button>
-
-                <Button color='inherit' component={Link} to='/my-games-list'>
-                    Games List
+                <Button color='inherit' component={Link} to='/my-maps-list'>
+                    My Maps
                 </Button>
 
                 <Button color='inherit' component={Link} to='/about'>
@@ -89,45 +80,65 @@ export const NavBar: FC = (): ReactElement => {
                 </Button>
                 {/* User button */}
                 <div>
-                    <IconButton color='inherit' {...bindTrigger(popupState)}>
-                        <AccountCircle />
-                    </IconButton>
-                    <Menu {...bindMenu(popupState)}>
-                        {!isLoggedIn && (
-                            <MenuItem
-                                onClick={popupState.close}
-                                component={Link}
-                                to='/login'
+                    {isLoggedIn ? (
+                        <>
+                            <IconButton
+                                color='inherit'
+                                {...bindTrigger(popupState)}
                             >
-                                <ListItemText
-                                    className={classes.menuItemText}
-                                    primary='Login'
-                                />
-                            </MenuItem>
-                        )}
+                                <AccountCircle />
+                            </IconButton>
+                            <Menu {...bindMenu(popupState)}>
+                                <MenuItem
+                                    onClick={popupState.close}
+                                    component={Link}
+                                    to='/session/277026142604493325'
+                                >
+                                    <ListItemText
+                                        className={classes.menuItemText}
+                                        primary='Game'
+                                    />
+                                </MenuItem>
+                                <MenuItem
+                                    onClick={popupState.close}
+                                    component={Link}
+                                    to='/my-games-list'
+                                >
+                                    <ListItemText
+                                        className={classes.menuItemText}
+                                        primary='Game List'
+                                    />
+                                </MenuItem>
+                                <MenuItem
+                                    onClick={popupState.close}
+                                    component={Link}
+                                    to='/target-select'
+                                >
+                                    <ListItemText primary='Target Selection' />
+                                </MenuItem>
 
-                        <MenuItem
-                            onClick={popupState.close}
+                                {/* TODO: Logout could probably be handled here */}
+                                <MenuItem
+                                    onClick={popupState.close}
+                                    component={Link}
+                                    to='/logout'
+                                >
+                                    <ListItemText
+                                        className={classes.menuItemText}
+                                        primary='Logout'
+                                    />
+                                </MenuItem>
+                            </Menu>
+                        </>
+                    ) : (
+                        <IconButton
+                            color='inherit'
                             component={Link}
-                            to='/target-select'
+                            to='/login'
                         >
-                            <ListItemText primary='Target Selection' />
-                        </MenuItem>
-
-                        {isLoggedIn && (
-                            // TODO: Logout could probably be handled here
-                            <MenuItem
-                                onClick={popupState.close}
-                                component={Link}
-                                to='/logout'
-                            >
-                                <ListItemText
-                                    className={classes.menuItemText}
-                                    primary='Logout'
-                                />
-                            </MenuItem>
-                        )}
-                    </Menu>
+                            <AccountCircle />
+                        </IconButton>
+                    )}
                 </div>
             </Toolbar>
         </AppBar>

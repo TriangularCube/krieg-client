@@ -67,27 +67,27 @@ export const Login: FC = (): ReactElement => {
         event.preventDefault()
         asyncLogin.execute()
     }
-    const loginAction = async () => {
-        const res = await login(
-            emailRef.current.value,
-            passwordRef.current.value
-        )
 
-        if (res.success) {
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            setAuthorizationToken(res.content.accessToken as string)
-            dispatch(setLoginState(true))
-        } else {
-            // TODO: error
-            console.log(res.error)
-        }
-    }
-    const asyncLogin = useAsyncCallback(loginAction)
+    const asyncLogin = useAsyncCallback(async () => {
+        return await login(emailRef.current.value, passwordRef.current.value)
+    })
 
-    if (isLoggedIn) {
-        const referrer = location.state?.referrer
-        return <Redirect to={referrer ?? '/'} />
+    switch (asyncLogin.status) {
+        case 'success':
+            const res = asyncLogin.result
+            if (res.success) {
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
+                setAuthorizationToken(res.content.accessToken as string)
+                dispatch(setLoginState(true))
+
+                const referrer = location.state?.referrer
+                return <Redirect to={referrer ?? '/'} />
+            } else {
+                // TODO
+                console.log(res.error)
+            }
+            break
     }
 
     return (

@@ -96,6 +96,7 @@ export const SessionConnection: FC = (): ReactElement => {
 
                 messageSystem = new MessageSystem(webConnection)
 
+                // Clean up dropped sessions
                 messageSystem.registerListener(
                     GameSetupCode.ConnectionDropped,
                     () => {
