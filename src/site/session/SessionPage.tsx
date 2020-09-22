@@ -25,7 +25,7 @@ export const SessionPage: FC = (): ReactElement => {
     }
 
     if (!sessionId) {
-        console.log('No Game ID')
+        console.log('No Session ID')
         return <Redirect to='/' />
     }
 

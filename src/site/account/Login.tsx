@@ -6,8 +6,8 @@ import { useAsyncCallback } from 'react-async-hook'
 
 // Redux
 import { useDispatch } from 'react-redux'
-import { useLoginSelector } from '../../util/redux/reduxReducers'
 import { setLoginState } from '../../util/redux/actions'
+import { useLoginSelector } from '../../util/redux/reduxReducers'
 
 // Networking
 import { HTTPMethod, NetworkMessage, sendMessage } from '../../util/network'
@@ -17,6 +17,7 @@ import {
     Avatar,
     Button,
     Card,
+    CircularProgress,
     CircularProgress as Progress,
     Container,
     Link,
@@ -53,9 +54,10 @@ const useStyles = makeStyles(theme => ({
 }))
 
 export const Login: FC = (): ReactElement => {
-    const isLoggedIn = useLoginSelector(state => state.isLoggedIn)
     const dispatch = useDispatch()
     const location = useLocation<LocationState>()
+
+    const isLoggedIn = useLoginSelector(state => state.isLoggedIn)
 
     const classes = useStyles()
 
@@ -72,6 +74,11 @@ export const Login: FC = (): ReactElement => {
         return await login(emailRef.current.value, passwordRef.current.value)
     })
 
+    if (isLoggedIn) {
+        const referrer = location.state?.referrer
+        return <Redirect to={referrer ?? '/'} />
+    }
+
     switch (asyncLogin.status) {
         case 'success':
             const res = asyncLogin.result
@@ -81,8 +88,7 @@ export const Login: FC = (): ReactElement => {
                 setAuthorizationToken(res.content.accessToken as string)
                 dispatch(setLoginState(true))
 
-                const referrer = location.state?.referrer
-                return <Redirect to={referrer ?? '/'} />
+                return null
             } else {
                 // TODO
                 console.log(res.error)

@@ -75,6 +75,14 @@ export const NavBar: FC = (): ReactElement => {
                     My Maps
                 </Button>
 
+                <Button
+                    color='inherit'
+                    component={Link}
+                    to='/map-edit/277337666849079816'
+                >
+                    Edit Map
+                </Button>
+
                 <Button color='inherit' component={Link} to='/about'>
                     About
                 </Button>

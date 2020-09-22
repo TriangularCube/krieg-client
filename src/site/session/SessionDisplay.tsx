@@ -1,11 +1,14 @@
 import React, { FC, ReactElement, useEffect } from 'react'
 import Phaser from 'phaser'
-import PropTypes from 'prop-types'
 
 import { makeStyles } from '@material-ui/core'
 
-import { gameConfig, StartScene, StartSceneKey } from '../../game/gameConfig'
-import { MessageSystem } from '../../game/gameDataInterface'
+import {
+    gameConfig,
+    StartScene,
+    StartSceneKey,
+} from '../../phaser/game/gameConfig'
+import { MessageSystem } from '../../phaser/game/gameDataInterface'
 
 type GameProps = {
     messageSystem: MessageSystem
@@ -19,7 +22,7 @@ const useStyles = makeStyles({
 })
 export const SessionDisplay: FC<GameProps> = ({
     messageSystem,
-}): ReactElement => {
+}: GameProps): ReactElement => {
     const classes = useStyles()
 
     useEffect(() => {
@@ -39,8 +42,4 @@ export const SessionDisplay: FC<GameProps> = ({
     }, [])
 
     return <div id='game-root' className={classes.root} />
-}
-
-SessionDisplay.propTypes = {
-    messageSystem: PropTypes.instanceOf(MessageSystem),
 }

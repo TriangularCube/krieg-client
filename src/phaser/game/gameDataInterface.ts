@@ -1,5 +1,5 @@
 import EventEmitter from 'eventemitter3'
-import { GameSetupCode } from '../../shared/MessageCodes'
+import { GameSetupCode } from '../../../shared/MessageCodes'
 
 export interface GameData {
     messageSystem: MessageSystem

@@ -25,6 +25,7 @@ import { MySessionsList } from './site/user/MySessionsList'
 import { MyMapsList } from './site/user/MyMapsList'
 import { makeStyles } from '@material-ui/core/styles'
 import { Footer } from './site/Footer'
+import { EditMap } from './site/map/EditMap'
 
 const useStyles = makeStyles({
     siteContent: {
@@ -61,6 +62,9 @@ const App: FC = (): ReactElement => {
 
                         <Route path='/my-maps-list'>
                             <MyMapsList />
+                        </Route>
+                        <Route path='/map-edit/:mapId'>
+                            <EditMap />
                         </Route>
 
                         <Route path='/create-session'>
