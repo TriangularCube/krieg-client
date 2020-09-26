@@ -1,13 +1,10 @@
-import React, { FC, FormEvent, ReactElement, useRef } from 'react'
-import { Link as RouterLink, Redirect, useLocation } from 'react-router-dom'
+import React, { FC, FormEvent, ReactElement, useRef, useState } from 'react'
+import { Link as RouterLink, useHistory, useLocation } from 'react-router-dom'
 import { LocationState } from '../../util/LocationState'
-
-import { useAsyncCallback } from 'react-async-hook'
 
 // Redux
 import { useDispatch } from 'react-redux'
 import { setLoginState } from '../../util/redux/actions'
-import { useLoginSelector } from '../../util/redux/reduxReducers'
 
 // Networking
 import { HTTPMethod, NetworkMessage, sendMessage } from '../../util/network'
@@ -18,7 +15,6 @@ import {
     Button,
     Card,
     CircularProgress,
-    CircularProgress as Progress,
     Container,
     Link,
     TextField,
@@ -56,44 +52,38 @@ const useStyles = makeStyles(theme => ({
 export const Login: FC = (): ReactElement => {
     const dispatch = useDispatch()
     const location = useLocation<LocationState>()
+    const history = useHistory()
 
-    const isLoggedIn = useLoginSelector(state => state.isLoggedIn)
+    // const isLoggedIn = useLoginSelector(state => state.isLoggedIn)
 
     const classes = useStyles()
+
+    const [isLoading, setLoading] = useState(false)
 
     // Refs for inputs
     const emailRef = useRef(null)
     const passwordRef = useRef(null)
 
-    const handleSubmit = (event: FormEvent): void => {
+    const handleSubmit = async (event: FormEvent): Promise<void> => {
         event.preventDefault()
-        asyncLogin.execute()
-    }
+        setLoading(true)
+        const result = await login(
+            emailRef.current.value,
+            passwordRef.current.value
+        )
 
-    const asyncLogin = useAsyncCallback(async () => {
-        return await login(emailRef.current.value, passwordRef.current.value)
-    })
+        if (result.success) {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            setAuthorizationToken(result.content.accessToken as string)
+            dispatch(setLoginState(true))
 
-    if (isLoggedIn) {
-        const referrer = location.state?.referrer
-        return <Redirect to={referrer ?? '/'} />
-    }
-
-    switch (asyncLogin.status) {
-        case 'success':
-            const res = asyncLogin.result
-            if (res.success) {
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
-                setAuthorizationToken(res.content.accessToken as string)
-                dispatch(setLoginState(true))
-
-                return null
-            } else {
-                // TODO
-                console.log(res.error)
-            }
-            break
+            const referrer = location.state?.referrer
+            history.push(referrer ?? '/')
+        } else {
+            // TODO
+            console.error(result)
+        }
     }
 
     return (
@@ -129,9 +119,9 @@ export const Login: FC = (): ReactElement => {
                         type='submit'
                         fullWidth
                         className={classes.submit}
-                        disabled={asyncLogin.loading}
+                        disabled={isLoading}
                     >
-                        {asyncLogin.loading ? <Progress /> : 'Login'}
+                        {isLoading ? <CircularProgress /> : 'Login'}
                     </Button>
                 </form>
 
