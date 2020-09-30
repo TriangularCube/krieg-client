@@ -50,7 +50,7 @@ export const sendMessage = async (
         if (
             !content.success &&
             withAuth &&
-            content.error.code === NetworkErrorCode.CouldNotVerifyToken &&
+            content.error?.code === NetworkErrorCode.CouldNotVerifyToken &&
             (await refreshToken())
         ) {
             result = await useFetch(method, path, body, withAuth, opt)

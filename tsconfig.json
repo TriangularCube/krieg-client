@@ -1,10 +1,9 @@
 {
+    "extends": "@tsconfig/recommended/tsconfig.json",
     "compilerOptions": {
-        "target": "es5",
         "sourceMap": true,
         "jsx": "react",
-        "esModuleInterop": true,
         "allowJs": false
     },
-    "include": ["**/*.ts", "**/*.tsx"]
+    "include": ["src/**/*.ts", "src/**/*.tsx"]
 }

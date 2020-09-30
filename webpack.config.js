@@ -42,7 +42,7 @@ module.exports = {
         new CopyPlugin({
             patterns: [
                 {
-                    from: 'src/phaser/assets/',
+                    from: 'src/krieg/assets/',
                     to: 'assets',
                     toType: 'dir'
                 }

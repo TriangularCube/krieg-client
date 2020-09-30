@@ -2,9 +2,10 @@ import React, { FC, ReactElement } from 'react'
 import { useLoginSelector } from '../../util/redux/reduxReducers'
 import { Redirect, useParams } from 'react-router-dom'
 import { CircularProgress, Container, makeStyles } from '@material-ui/core'
-import { EditMapDisplay, MapData } from './EditMapDisplay'
+import { EditMapDisplay } from './EditMapDisplay'
 import { useAsync } from 'react-async-hook'
 import { HTTPMethod, NetworkMessage, sendMessage } from '../../util/network'
+import { KriegMap, KriegMapData } from '../../krieg/common/GameMap'
 
 const useStyles = makeStyles({
     container: {
@@ -39,7 +40,7 @@ export const EditMap: FC = (): ReactElement => {
 
 interface MapMessage extends NetworkMessage {
     content: {
-        map: MapData
+        map: KriegMapData
     }
 }
 const EditMapGet: FC = (): ReactElement => {
@@ -53,12 +54,16 @@ const EditMapGet: FC = (): ReactElement => {
             return <CircularProgress />
         case 'success':
             const mapResult = getResult.result as MapMessage
-            if (!mapResult.content?.map) {
+            if (!mapResult.success) {
                 // TODO
                 return null
             }
 
-            return <EditMapDisplay mapData={mapResult.content.map} />
+            return (
+                <EditMapDisplay
+                    kriegMap={new KriegMap(mapResult.content.map)}
+                />
+            )
     }
 
     return <CircularProgress />

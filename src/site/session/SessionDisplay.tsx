@@ -7,8 +7,8 @@ import {
     gameConfig,
     StartScene,
     StartSceneKey,
-} from '../../phaser/game/gameConfig'
-import { MessageSystem } from '../../phaser/game/gameDataInterface'
+} from '../../krieg/game/gameConfig'
+import { MessageSystem } from '../../krieg/game/gameDataInterface'
 
 type GameProps = {
     messageSystem: MessageSystem

@@ -6,7 +6,7 @@ import { CircularProgress, Typography } from '@material-ui/core'
 import { getTargetWSUrl } from '../../util/apiTarget'
 import { HTTPMethod, NetworkMessage, sendMessage } from '../../util/network'
 
-import { MessageSystem } from '../../phaser/game/gameDataInterface'
+import { MessageSystem } from '../../krieg/game/gameDataInterface'
 import { SessionDisplay } from './SessionDisplay'
 
 import { GameSetupCode } from '../../../shared/MessageCodes'

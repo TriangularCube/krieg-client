@@ -1,12 +1,11 @@
-import * as Phaser from 'phaser'
 import { MessageSystem, GameData } from '../gameDataInterface'
 import { Clamp } from '../utils/math'
 
 export class TestScene extends Phaser.Scene {
-    private messageSystem: MessageSystem
+    private messageSystem!: MessageSystem
 
-    private keys
-    private tile: Phaser.GameObjects.Sprite
+    private keys!: { [key: string]: Phaser.Input.Keyboard.Key }
+    private tile!: Phaser.GameObjects.Sprite
 
     public init(data: GameData): void {
         this.messageSystem = data.messageSystem
@@ -22,10 +21,6 @@ export class TestScene extends Phaser.Scene {
     }
 
     public create(): void {
-        this.messageSystem.registerListener('test', data => {
-            console.log(data)
-        })
-
         const atlasTexture = this.textures.get('terrain')
 
         const frame = atlasTexture.get('scifiTile_01.png')
@@ -43,13 +38,21 @@ export class TestScene extends Phaser.Scene {
             left: 'left',
             right: 'right',
             confirm: 'a',
-        })
+        }) as { [key: string]: Phaser.Input.Keyboard.Key }
 
-        this.input.on('wheel', (pointer, currentlyOver, dx, dy) => {
-            this.cameras.main.setZoom(
-                Clamp((this.cameras.main.zoom -= dy / 100), 0.5, 1)
-            )
-        })
+        this.input.on(
+            'wheel',
+            (
+                pointer: unknown,
+                currentlyOver: unknown,
+                dx: number,
+                dy: number
+            ) => {
+                this.cameras.main.setZoom(
+                    Clamp((this.cameras.main.zoom -= dy / 100), 0.5, 1)
+                )
+            }
+        )
     }
 
     public update(): void {
