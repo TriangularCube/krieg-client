@@ -1,13 +1,14 @@
 import React, { FC, ReactElement, useEffect, useState } from 'react'
 
 import { makeStyles, Tab, Tabs } from '@material-ui/core'
+
+import { KriegMap } from '../../krieg/common/GameMap'
+import { mapConfig } from '../../krieg/mapBuilder/mapConfig'
 import {
     MapBuilderScene,
     MapBuilderSceneKey,
-    mapConfig,
-} from '../../krieg/mapBuilder/mapConfig'
-
-import { KriegMap } from '../../krieg/common/GameMap'
+} from '../../krieg/mapBuilder/MapBuilderScene'
+import { LoadingScene, LoadingSceneKey } from '../../krieg/common/LoadingScene'
 
 interface MapProps {
     kriegMap: KriegMap
@@ -37,7 +38,7 @@ export const EditMapDisplay: FC<MapProps> = ({
 
     const [tabState, setTabState] = useState(0)
 
-    const onMessage = event => {
+    const onMessage = (event: MessageEvent) => {
         console.log(event.data)
     }
 
@@ -47,16 +48,20 @@ export const EditMapDisplay: FC<MapProps> = ({
 
         port1.onmessage = onMessage
 
-        const display = new Phaser.Game(mapConfig)
+        const engine = new Phaser.Game(mapConfig)
 
-        display.scene.add(MapBuilderSceneKey, MapBuilderScene, false)
-        display.scene.start(MapBuilderSceneKey, {
-            kriegMap,
-            port: channel.port2,
+        engine.scene.add(LoadingSceneKey, LoadingScene, false)
+        engine.scene.add(MapBuilderSceneKey, MapBuilderScene, false)
+        engine.scene.start(LoadingSceneKey, {
+            nextSceneKey: MapBuilderSceneKey,
+            nextSceneData: {
+                kriegMap,
+                port: channel.port2,
+            },
         })
 
         return () => {
-            display?.destroy(true)
+            engine?.destroy(true)
         }
     }, [])
 

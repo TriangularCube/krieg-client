@@ -9,7 +9,7 @@ export class TerrainTile extends Phaser.GameObjects.Sprite {
         y: number,
         texture: string | Phaser.Textures.Texture
     ) {
-        super(scene, 0, 0, texture)
+        super(scene, 0, 0, '')
         scene.add.existing(this)
 
         this.setPosition(40, 40)

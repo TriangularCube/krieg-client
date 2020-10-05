@@ -1,7 +1,7 @@
 import * as Phaser from 'phaser'
 
 export const mapConfig: Phaser.Types.Core.GameConfig = {
-    title: 'Map Builder',
+    title: 'Krieg Map Builder',
 
     type: Phaser.AUTO,
 
@@ -10,11 +10,6 @@ export const mapConfig: Phaser.Types.Core.GameConfig = {
         height: 600,
     },
 
-    physics: null,
-
     parent: 'map-root',
     backgroundColor: '#efc533',
 }
-
-export { MapBuilderScene } from './MapBuilderScene'
-export const MapBuilderSceneKey = 'Map Builder'
