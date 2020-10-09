@@ -1,5 +1,5 @@
 import { MessageSystem, GameData } from '../gameDataInterface'
-import { Clamp } from '../utils/math'
+import { Clamp } from '../../common/math'
 
 export class TestScene extends Phaser.Scene {
     private messageSystem!: MessageSystem

@@ -1,5 +1,5 @@
 import * as Phaser from 'phaser'
-import { TerrainAnimations } from './LoadingData'
+import { TerrainGraphics } from './GraphicsData'
 import { KriegMap } from './GameMap'
 
 interface LoadingSceneData {
@@ -21,15 +21,12 @@ export class LoadingScene extends Phaser.Scene {
 
     public async preload(): Promise<void> {
         this.load.setBaseURL('/assets')
-        this.load.atlasXML(
-            'terrain',
-            'graphics/terrain_sheet.png',
-            'graphics/terrain_sheet.xml'
-        )
+
+        this.loadTerrainSheets()
     }
 
     public create(): void {
-        this.loadTerrain()
+        this.loadTerrainAnimations()
 
         // Start next Scene
         this.scene.start(
@@ -38,14 +35,22 @@ export class LoadingScene extends Phaser.Scene {
         )
     }
 
-    private loadTerrain() {
-        TerrainAnimations.forEach(value => {
+    private loadTerrainSheets(): void {
+        const processName = (name: string) => `graphics/terrain/${name}.png`
+
+        TerrainGraphics.forEach(value => {
+            this.load.spritesheet(value.name, processName(value.spriteSheet), {
+                frameWidth: 64,
+                frameHeight: 64,
+            })
+        })
+    }
+
+    private loadTerrainAnimations() {
+        TerrainGraphics.forEach(value => {
             this.anims.create({
-                ...value.config,
-                frames: this.anims.generateFrameNames(
-                    'terrain',
-                    value.framesConfig
-                ),
+                ...value.animationConfig,
+                frames: this.anims.generateFrameNumbers(value.name, {}),
             })
         })
     }

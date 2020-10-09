@@ -8,8 +8,8 @@ export interface GameMapData {
 }
 
 export class KriegMap {
-    private name: string
-    private gameMap: GameMap
+    public name: string
+    public readonly gameMap: GameMap
 
     constructor(mapData: KriegMapData) {
         this.name = mapData.name
@@ -18,13 +18,29 @@ export class KriegMap {
 }
 
 export class GameMap {
-    private terrain: number[][]
+    private _terrain: number[][]
+    private _width: number
+    private _height: number
 
     constructor(data: GameMapData) {
-        this.terrain = data.terrain
+        this._terrain = data.terrain
+
+        // TODO
+        this._width = 20
+        this._height = 20
     }
 
-    public setMapSize(width: number, height: number) {
+    get width(): number {
+        return this._width
+    }
+    get height(): number {
+        return this._height
+    }
+    public getTerrainAt(x: number, y: number): number {
+        return this._terrain[x][y]
+    }
+
+    public setMapSize(width: number, height: number): void {
         // TODO
     }
 }
