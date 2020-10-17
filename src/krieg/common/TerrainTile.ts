@@ -11,8 +11,8 @@ export class TerrainTile extends Phaser.GameObjects.Sprite {
 
         super(
             scene,
-            (x + 0.5) * TileSize + BorderSize,
-            (y + 0.5) * TileSize + BorderSize,
+            (x + 0.5) * TileSize /* + BorderSize */,
+            (y + 0.5) * TileSize /* + BorderSize */,
             terrainData.name
         )
         scene.add.existing(this)

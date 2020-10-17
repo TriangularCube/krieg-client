@@ -2,6 +2,7 @@ import { KriegMap } from '../common/GameMap'
 import { TerrainTile } from '../common/TerrainTile'
 import { SceneData } from '../common/LoadingScene'
 import { Clamp } from '../common/math'
+import { TileSize } from '../common/GraphicsData'
 
 type MapSceneData = SceneData
 interface ClickPoint {
@@ -60,6 +61,17 @@ export class MapBuilderScene extends Phaser.Scene {
                     y
                 )
             }
+        }
+        this.camera.setBounds(
+            0,
+            0,
+            /* BorderSize * 2 + */ TileSize * gameMap.width,
+            /* BorderSize * 2 + */ TileSize * gameMap.height
+        )
+        // TODO: Figure out if we want borders around map edge
+
+        this.port.onmessage = (message: MessageEvent) => {
+            console.log(message.data)
         }
 
         this.port.postMessage('Finished Create')

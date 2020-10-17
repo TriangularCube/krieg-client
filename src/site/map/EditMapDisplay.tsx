@@ -1,6 +1,7 @@
 import React, { FC, ReactElement, useEffect, useState } from 'react'
 
-import { makeStyles, Tab, Tabs } from '@material-ui/core'
+import { Grid, makeStyles, Tab, Tabs } from '@material-ui/core'
+import Spritesheet from 'react-responsive-spritesheet'
 
 import { KriegMap } from '../../krieg/common/GameMap'
 import { mapConfig } from '../../krieg/mapBuilder/mapConfig'
@@ -9,6 +10,7 @@ import {
     MapBuilderSceneKey,
 } from '../../krieg/mapBuilder/MapBuilderScene'
 import { LoadingScene, LoadingSceneKey } from '../../krieg/common/LoadingScene'
+import { SelectionCursorPadding } from '../../krieg/common/GraphicsData'
 
 interface MapProps {
     kriegMap: KriegMap
@@ -37,6 +39,7 @@ export const EditMapDisplay: FC<MapProps> = ({
     const classes = useStyles()
 
     const [tabState, setTabState] = useState(0)
+    const [port, setPort] = useState<MessagePort | null>(null)
 
     const onMessage = (event: MessageEvent) => {
         console.log(event.data)
@@ -45,6 +48,7 @@ export const EditMapDisplay: FC<MapProps> = ({
     useEffect(() => {
         const channel = new MessageChannel()
         const port1 = channel.port1
+        setPort(port1)
 
         port1.onmessage = onMessage
 
@@ -76,7 +80,78 @@ export const EditMapDisplay: FC<MapProps> = ({
                     <Tab label='Tools' />
                     <Tab label='Data' />
                 </Tabs>
+                <div hidden={tabState !== 0}>
+                    {/* Terrain Grid */}
+                    <Grid container>
+                        <Tool
+                            image='/assets/graphics/terrain/scifiTile_01.png'
+                            onClick={() => port?.postMessage('Set to Option 1')}
+                        />
+                        <Tool
+                            image='/assets/graphics/terrain/scifiTile_02.png'
+                            onClick={() => console.log('hi 2')}
+                        />
+                        <Tool
+                            image='/assets/graphics/terrain/scifiTile_03.png'
+                            onClick={() => console.log('hi 3')}
+                        />
+                        <Tool
+                            image='/assets/graphics/terrain/scifiTile_04.png'
+                            onClick={() => console.log('hi 4')}
+                        />
+                    </Grid>
+                </div>
             </div>
         </div>
+    )
+}
+
+interface ToolProps {
+    image: string
+    onClick: (event: Event) => void
+}
+const useToolStyles = makeStyles({
+    toolBlockContainer: {
+        position: 'relative',
+        display: 'flex',
+        justifyContent: 'center',
+        alignContent: 'center',
+    },
+    toolBlock: {
+        padding: `${SelectionCursorPadding}px`,
+    },
+    toolOverlay: {
+        position: 'absolute',
+        top: '0%',
+        left: '50%',
+        transform: 'translate(-50%, 0%)',
+        pointerEvents: 'none',
+    },
+})
+const Tool: FC<ToolProps> = ({ image, onClick }: ToolProps) => {
+    const classes = useToolStyles()
+    return (
+        <Grid item xs={3}>
+            <div className={classes.toolBlockContainer}>
+                <Spritesheet
+                    className={classes.toolBlock}
+                    image={image}
+                    widthFrame={64}
+                    heightFrame={64}
+                    steps={1}
+                    fps={0}
+                    isResponsive={false} // TODO: Wrap in proper div
+                    onClick={onClick}
+                />
+                <div className={classes.toolOverlay}>
+                    <img
+                        style={{
+                            pointerEvents: 'none',
+                        }}
+                        src='/assets/graphics/cursor.png'
+                    />
+                </div>
+            </div>
+        </Grid>
     )
 }

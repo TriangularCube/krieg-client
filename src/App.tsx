@@ -11,21 +11,105 @@ import { Provider } from 'react-redux'
 import { store } from './util/redux/reduxStore'
 
 import { CssBaseline } from '@material-ui/core'
-import { NavBar } from './site/NavBar'
-import { Splash } from './site/Splash'
-import { SessionPage } from './site/session/SessionPage'
-import { CreateAccount } from './site/account/CreateAccount'
-import { NotFound } from './site/NotFound'
-import { TargetSelection } from './site/TargetSelection'
-import { Login } from './site/account/Login'
-import { VerifyAccount } from './site/account/VerifyAccount'
-import { LogOut } from './site/account/LogOut'
-import { CreateSession } from './site/user/CreateSession'
-import { MySessionsList } from './site/user/MySessionsList'
-import { MyMapsList } from './site/user/MyMapsList'
 import { makeStyles } from '@material-ui/core/styles'
+
+import loadable from '@loadable/component'
+
+import { NavBar } from './site/NavBar'
 import { Footer } from './site/Footer'
-import { EditMap } from './site/map/EditMap'
+
+// region Dynamic Imports
+const Splash = loadable(
+    () => import(/* webpackChunkName: "Splash" */ './site/Splash'),
+    {
+        resolveComponent: components => components.Splash,
+    }
+)
+const SessionPage = loadable(
+    () =>
+        import(
+            /* webpackChunkName: "SessionPage" */ './site/session/SessionPage'
+        ),
+    {
+        resolveComponent: components => components.SessionPage,
+    }
+)
+const CreateAccount = loadable(
+    () =>
+        import(
+            /* webpackChunkName: "CreateAccount" */ './site/account/CreateAccount'
+        ),
+    {
+        resolveComponent: components => components.CreateAccount,
+    }
+)
+const NotFound = loadable(
+    () => import(/* webpackChunkName: "NotFound" */ './site/NotFound'),
+    {
+        resolveComponent: components => components.NotFound,
+    }
+)
+const TargetSelection = loadable(
+    () =>
+        import(
+            /* webpackChunkName: "TargetSelection" */ './site/TargetSelection'
+        ),
+    {
+        resolveComponent: components => components.TargetSelection,
+    }
+)
+const Login = loadable(
+    () => import(/* webpackChunkName: "Login" */ './site/account/Login'),
+    {
+        resolveComponent: components => components.Login,
+    }
+)
+const VerifyAccount = loadable(
+    () =>
+        import(
+            /* webpackChunkName: "VerifyAccount" */ './site/account/VerifyAccount'
+        ),
+    {
+        resolveComponent: components => components.VerifyAccount,
+    }
+)
+const LogOut = loadable(
+    () => import(/* webpackChunkName: "LogOut" */ './site/account/LogOut'),
+    {
+        resolveComponent: components => components.LogOut,
+    }
+)
+const CreateSession = loadable(
+    () =>
+        import(
+            /* webpackChunkName: "CreateSession" */ './site/user/CreateSession'
+        ),
+    {
+        resolveComponent: components => components.CreateSession,
+    }
+)
+const MySessionsList = loadable(
+    () =>
+        import(
+            /* webpackChunkName: "MySessionsList" */ './site/user/MySessionsList'
+        ),
+    {
+        resolveComponent: components => components.MySessionsList,
+    }
+)
+const MyMapsList = loadable(
+    () => import(/* webpackChunkName: "MyMapsList" */ './site/user/MyMapsList'),
+    {
+        resolveComponent: components => components.MyMapsList,
+    }
+)
+const EditMap = loadable(
+    () => import(/* webpackChunkName: "EditMap" */ './site/map/EditMap'),
+    {
+        resolveComponent: components => components.EditMap,
+    }
+)
+// endregion
 
 const useStyles = makeStyles({
     siteContent: {

@@ -17,3 +17,5 @@ export const TerrainGraphics = new Map([
         },
     ],
 ])
+
+export const SelectionCursorPadding = 2

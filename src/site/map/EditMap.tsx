@@ -7,6 +7,10 @@ import { useAsync } from 'react-async-hook'
 import { HTTPMethod, NetworkMessage, sendMessage } from '../../util/network'
 import { KriegMap, KriegMapData } from '../../krieg/common/GameMap'
 
+interface ParamTypes {
+    mapId: string
+}
+
 const useStyles = makeStyles({
     container: {
         display: 'flex',
@@ -17,7 +21,7 @@ const useStyles = makeStyles({
 })
 export const EditMap: FC = (): ReactElement => {
     const isLoggedIn = useLoginSelector(state => state.isLoggedIn)
-    const { mapId } = useParams()
+    const { mapId } = useParams<ParamTypes>()
 
     const classes = useStyles()
 
@@ -43,8 +47,8 @@ interface MapMessage extends NetworkMessage {
         map: KriegMapData
     }
 }
-const EditMapGet: FC = (): ReactElement => {
-    const { mapId } = useParams()
+const EditMapGet: FC = (): React.ReactElement | null => {
+    const { mapId } = useParams<ParamTypes>()
     const getResult = useAsync(async () => {
         return await sendMessage(HTTPMethod.GET, `/map/${mapId}`, true)
     }, [])

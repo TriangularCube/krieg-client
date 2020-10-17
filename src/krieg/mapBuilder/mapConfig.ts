@@ -11,5 +11,4 @@ export const mapConfig: Phaser.Types.Core.GameConfig = {
     },
 
     parent: 'map-root',
-    backgroundColor: '#efc533',
 }
