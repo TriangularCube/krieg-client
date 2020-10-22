@@ -1,5 +1,5 @@
 const localStorageName = 'Krieg-API-Target'
-const targets = {
+const targets: { [index: string]: { [index: string]: string } } = {
     local: {
         rest: 'http://127.0.0.1:8080',
         ws: 'ws://127.0.0.1:8080/game',
@@ -19,7 +19,7 @@ const targets = {
 }
 const saved = localStorage.getItem(localStorageName)
 
-let targetName = saved ?? process.env.DEFAULT_TARGET
+let targetName: string = saved ?? process.env.DEFAULT_TARGET ?? 'production'
 let targetUrl = targets[targetName] ?? targets.production
 
 export const getTargetUrl = (): string => {
