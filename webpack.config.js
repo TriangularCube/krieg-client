@@ -33,6 +33,11 @@ module.exports = {
     resolve: {
         extensions: ['*', '.js', '.ts', '.tsx'],
     },
+    externals: {
+        phaser: 'Phaser',
+        react: 'React',
+        'react-dom': 'ReactDOM'
+    },
     plugins: [
         new CleanWebpackPlugin(),
         new HtmlWebPackPlugin({

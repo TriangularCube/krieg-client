@@ -1,3 +1,4 @@
+// region Imports
 import React, { FC, ReactElement } from 'react'
 import ReactDOM from 'react-dom'
 import {
@@ -18,7 +19,6 @@ import loadable from '@loadable/component'
 import { NavBar } from './site/NavBar'
 import { Footer } from './site/Footer'
 
-// region Dynamic Imports
 const Splash = loadable(
     () => import(/* webpackChunkName: "Splash" */ './site/Splash'),
     {

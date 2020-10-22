@@ -1,5 +1,5 @@
 import * as Phaser from 'phaser'
-import { TileSize, TerrainGraphics, BorderSize } from './GraphicsData'
+import { TileSize, TerrainGraphics } from './GraphicsData'
 
 export class TerrainTile extends Phaser.GameObjects.Sprite {
     private terrainId: number

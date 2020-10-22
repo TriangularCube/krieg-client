@@ -9,6 +9,7 @@ import {
     MapBuilderScene,
     MapBuilderSceneKey,
 } from '../../krieg/mapBuilder/MapBuilderScene'
+import { ToolType, ToolCategory } from '../../krieg/mapBuilder/ToolTypes'
 import { LoadingScene, LoadingSceneKey } from '../../krieg/common/LoadingScene'
 import { SelectionCursorPadding } from '../../krieg/common/GraphicsData'
 
@@ -40,9 +41,18 @@ export const EditMapDisplay: FC<MapProps> = ({
 
     const [tabState, setTabState] = useState(0)
     const [port, setPort] = useState<MessagePort | null>(null)
+    const [currentTool, setTool] = useState<ToolType>({
+        category: ToolCategory.Terrain,
+        type: 0,
+    })
 
     const onMessage = (event: MessageEvent) => {
         console.log(event.data)
+    }
+
+    const handleToolSelection = (tool: ToolType) => {
+        setTool(tool)
+        port?.postMessage(tool)
     }
 
     useEffect(() => {
@@ -85,19 +95,39 @@ export const EditMapDisplay: FC<MapProps> = ({
                     <Grid container>
                         <Tool
                             image='/assets/graphics/terrain/scifiTile_01.png'
-                            onClick={() => port?.postMessage('Set to Option 1')}
+                            currentTool={currentTool}
+                            toolData={{
+                                category: ToolCategory.Terrain,
+                                type: 0,
+                            }}
+                            handler={handleToolSelection}
                         />
                         <Tool
                             image='/assets/graphics/terrain/scifiTile_02.png'
-                            onClick={() => console.log('hi 2')}
+                            currentTool={currentTool}
+                            toolData={{
+                                category: ToolCategory.Terrain,
+                                type: 1,
+                            }}
+                            handler={handleToolSelection}
                         />
                         <Tool
                             image='/assets/graphics/terrain/scifiTile_03.png'
-                            onClick={() => console.log('hi 3')}
+                            currentTool={currentTool}
+                            toolData={{
+                                category: ToolCategory.Terrain,
+                                type: 2,
+                            }}
+                            handler={handleToolSelection}
                         />
                         <Tool
                             image='/assets/graphics/terrain/scifiTile_04.png'
-                            onClick={() => console.log('hi 4')}
+                            currentTool={currentTool}
+                            toolData={{
+                                category: ToolCategory.Terrain,
+                                type: 3,
+                            }}
+                            handler={handleToolSelection}
                         />
                     </Grid>
                 </div>
@@ -108,7 +138,9 @@ export const EditMapDisplay: FC<MapProps> = ({
 
 interface ToolProps {
     image: string
-    onClick: (event: Event) => void
+    toolData: ToolType
+    currentTool: ToolType
+    handler: (tool: ToolType) => void
 }
 const useToolStyles = makeStyles({
     toolBlockContainer: {
@@ -128,8 +160,17 @@ const useToolStyles = makeStyles({
         pointerEvents: 'none',
     },
 })
-const Tool: FC<ToolProps> = ({ image, onClick }: ToolProps) => {
+const Tool: FC<ToolProps> = ({
+    image,
+    toolData,
+    currentTool,
+    handler,
+}: ToolProps) => {
     const classes = useToolStyles()
+    const isCurrentTool =
+        currentTool.category === toolData.category &&
+        currentTool.type === toolData.type
+
     return (
         <Grid item xs={3}>
             <div className={classes.toolBlockContainer}>
@@ -141,9 +182,9 @@ const Tool: FC<ToolProps> = ({ image, onClick }: ToolProps) => {
                     steps={1}
                     fps={0}
                     isResponsive={false} // TODO: Wrap in proper div
-                    onClick={onClick}
+                    onClick={() => handler(toolData)}
                 />
-                <div className={classes.toolOverlay}>
+                <div className={classes.toolOverlay} hidden={!isCurrentTool}>
                     <img
                         style={{
                             pointerEvents: 'none',
