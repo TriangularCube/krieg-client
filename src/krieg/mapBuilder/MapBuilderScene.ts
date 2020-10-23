@@ -20,8 +20,6 @@ export const MapBuilderSceneKey = 'Map Builder'
 export class MapBuilderScene extends Phaser.Scene {
     private port!: MessagePort
 
-    private tile!: Phaser.GameObjects.Sprite
-
     private kriegMap!: KriegMap
 
     private terrainLayer!: Phaser.GameObjects.Sprite[][]
@@ -30,6 +28,7 @@ export class MapBuilderScene extends Phaser.Scene {
     private keys!: { [key: string]: Phaser.Input.Keyboard.Key }
 
     private camera!: Phaser.Cameras.Scene2D.Camera
+    private minZoom = 0.5
 
     public init(sceneData: MapSceneData): void {
         this.port = sceneData.port
@@ -41,7 +40,7 @@ export class MapBuilderScene extends Phaser.Scene {
     }
 
     public create(): void {
-        this.camera = this.cameras.main
+        this.setupCamera()
 
         this.SetupControls()
 
@@ -62,6 +61,21 @@ export class MapBuilderScene extends Phaser.Scene {
                 )
             }
         }
+
+        this.port.onmessage = (message: MessageEvent) => {
+            console.log(message.data)
+        }
+
+        this.port.postMessage('Finished Create')
+    }
+
+    private setMinZoom(): void {
+        const zoom = this.camera.width / this.camera.zoom
+    }
+
+    private setupCamera(): void {
+        this.camera = this.cameras.main
+
         this.camera.setBounds(
             0,
             0,
@@ -70,11 +84,7 @@ export class MapBuilderScene extends Phaser.Scene {
         )
         // TODO: Figure out if we want borders around map edge
 
-        this.port.onmessage = (message: MessageEvent) => {
-            console.log(message.data)
-        }
-
-        this.port.postMessage('Finished Create')
+        this.setMinZoom()
     }
 
     private SetupControls(): void {
@@ -103,6 +113,7 @@ export class MapBuilderScene extends Phaser.Scene {
                 this.cameras.main.setZoom(
                     Clamp((this.cameras.main.zoom -= dy / 100), 0.5, 1)
                 )
+                console.log(this.camera)
             }
         )
 
