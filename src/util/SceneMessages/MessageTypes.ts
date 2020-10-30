@@ -1,3 +1,8 @@
+export enum MessageType {
+    System = 'System',
+    Tool = 'Tool',
+}
+
 export enum ToolCategory {
     Terrain,
 }

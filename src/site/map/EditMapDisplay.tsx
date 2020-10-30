@@ -9,9 +9,14 @@ import {
     MapBuilderScene,
     MapBuilderSceneKey,
 } from '../../krieg/mapBuilder/MapBuilderScene'
-import { ToolType, ToolCategory } from '../../krieg/mapBuilder/ToolTypes'
+import {
+    MessageType,
+    ToolCategory,
+    ToolType,
+} from '../../util/SceneMessages/MessageTypes'
 import { LoadingScene, LoadingSceneKey } from '../../krieg/common/LoadingScene'
 import { SelectionCursorPadding } from '../../krieg/common/GraphicsData'
+import { SceneMessageHandler } from '../../util/SceneMessages/SceneMessageHandler'
 
 interface MapProps {
     kriegMap: KriegMap
@@ -40,27 +45,24 @@ export const EditMapDisplay: FC<MapProps> = ({
     const classes = useStyles()
 
     const [tabState, setTabState] = useState(0)
-    const [port, setPort] = useState<MessagePort | null>(null)
-    const [currentTool, setTool] = useState<ToolType>({
-        category: ToolCategory.Terrain,
-        type: 0,
-    })
-
-    const onMessage = (event: MessageEvent) => {
-        console.log(event.data)
-    }
+    const [handler, setHandler] = useState<SceneMessageHandler | null>(null)
+    const [currentTool, setTool] = useState<ToolType | null>(null)
 
     const handleToolSelection = (tool: ToolType) => {
         setTool(tool)
-        port?.postMessage(tool)
+        handler?.postMessage(MessageType.Tool, tool)
     }
 
     useEffect(() => {
         const channel = new MessageChannel()
-        const port1 = channel.port1
-        setPort(port1)
+        const handler = new SceneMessageHandler(channel.port1)
+        setHandler(handler)
 
-        port1.onmessage = onMessage
+        handler.addListener(MessageType.Tool, data => {
+            console.log(data)
+        })
+
+        handler.addListener(MessageType.System, data => console.log(data))
 
         const engine = new Phaser.Game(mapConfig)
 
@@ -139,7 +141,7 @@ export const EditMapDisplay: FC<MapProps> = ({
 interface ToolProps {
     image: string
     toolData: ToolType
-    currentTool: ToolType
+    currentTool: ToolType | null
     handler: (tool: ToolType) => void
 }
 const useToolStyles = makeStyles({
@@ -168,8 +170,8 @@ const Tool: FC<ToolProps> = ({
 }: ToolProps) => {
     const classes = useToolStyles()
     const isCurrentTool =
-        currentTool.category === toolData.category &&
-        currentTool.type === toolData.type
+        currentTool?.category === toolData.category &&
+        currentTool?.type === toolData.type
 
     return (
         <Grid item xs={3}>
