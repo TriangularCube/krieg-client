@@ -2,22 +2,22 @@ import EventEmitter from 'eventemitter3'
 import { MessageType } from './MessageTypes'
 
 export class SceneMessageHandler extends EventEmitter {
-    private port: MessagePort
+  private port: MessagePort
 
-    constructor(port: MessagePort) {
-        super()
+  constructor(port: MessagePort) {
+    super()
 
-        this.port = port
+    this.port = port
 
-        port.onmessage = (event: MessageEvent) => {
-            this.emit(event.data.messageType, event.data.data)
-        }
+    port.onmessage = (event: MessageEvent) => {
+      this.emit(event.data.messageType, event.data.data)
     }
+  }
 
-    public postMessage(messageType: MessageType, data: unknown): void {
-        this.port.postMessage({
-            messageType,
-            data,
-        })
-    }
+  public postMessage(messageType: MessageType, data: unknown): void {
+    this.port.postMessage({
+      messageType,
+      data,
+    })
+  }
 }

@@ -2,10 +2,10 @@
 import React, { FC, ReactElement } from 'react'
 import ReactDOM from 'react-dom'
 import {
-    BrowserRouter as Router,
-    Redirect,
-    Route,
-    Switch,
+  BrowserRouter as Router,
+  Redirect,
+  Route,
+  Switch,
 } from 'react-router-dom'
 
 import { Provider } from 'react-redux'
@@ -20,166 +20,160 @@ import { NavBar } from './site/NavBar'
 import { Footer } from './site/Footer'
 
 const Splash = loadable(
-    () => import(/* webpackChunkName: "Splash" */ './site/Splash'),
-    {
-        resolveComponent: components => components.Splash,
-    }
+  () => import(/* webpackChunkName: "Splash" */ './site/Splash'),
+  {
+    resolveComponent: components => components.Splash,
+  }
 )
 const SessionPage = loadable(
-    () =>
-        import(
-            /* webpackChunkName: "SessionPage" */ './site/session/SessionPage'
-        ),
-    {
-        resolveComponent: components => components.SessionPage,
-    }
+  () =>
+    import(/* webpackChunkName: "SessionPage" */ './site/session/SessionPage'),
+  {
+    resolveComponent: components => components.SessionPage,
+  }
 )
 const CreateAccount = loadable(
-    () =>
-        import(
-            /* webpackChunkName: "CreateAccount" */ './site/account/CreateAccount'
-        ),
-    {
-        resolveComponent: components => components.CreateAccount,
-    }
+  () =>
+    import(
+      /* webpackChunkName: "CreateAccount" */ './site/account/CreateAccount'
+    ),
+  {
+    resolveComponent: components => components.CreateAccount,
+  }
 )
 const NotFound = loadable(
-    () => import(/* webpackChunkName: "NotFound" */ './site/NotFound'),
-    {
-        resolveComponent: components => components.NotFound,
-    }
+  () => import(/* webpackChunkName: "NotFound" */ './site/NotFound'),
+  {
+    resolveComponent: components => components.NotFound,
+  }
 )
 const TargetSelection = loadable(
-    () =>
-        import(
-            /* webpackChunkName: "TargetSelection" */ './site/TargetSelection'
-        ),
-    {
-        resolveComponent: components => components.TargetSelection,
-    }
+  () =>
+    import(/* webpackChunkName: "TargetSelection" */ './site/TargetSelection'),
+  {
+    resolveComponent: components => components.TargetSelection,
+  }
 )
 const Login = loadable(
-    () => import(/* webpackChunkName: "Login" */ './site/account/Login'),
-    {
-        resolveComponent: components => components.Login,
-    }
+  () => import(/* webpackChunkName: "Login" */ './site/account/Login'),
+  {
+    resolveComponent: components => components.Login,
+  }
 )
 const VerifyAccount = loadable(
-    () =>
-        import(
-            /* webpackChunkName: "VerifyAccount" */ './site/account/VerifyAccount'
-        ),
-    {
-        resolveComponent: components => components.VerifyAccount,
-    }
+  () =>
+    import(
+      /* webpackChunkName: "VerifyAccount" */ './site/account/VerifyAccount'
+    ),
+  {
+    resolveComponent: components => components.VerifyAccount,
+  }
 )
 const LogOut = loadable(
-    () => import(/* webpackChunkName: "LogOut" */ './site/account/LogOut'),
-    {
-        resolveComponent: components => components.LogOut,
-    }
+  () => import(/* webpackChunkName: "LogOut" */ './site/account/LogOut'),
+  {
+    resolveComponent: components => components.LogOut,
+  }
 )
 const CreateSession = loadable(
-    () =>
-        import(
-            /* webpackChunkName: "CreateSession" */ './site/user/CreateSession'
-        ),
-    {
-        resolveComponent: components => components.CreateSession,
-    }
+  () =>
+    import(/* webpackChunkName: "CreateSession" */ './site/user/CreateSession'),
+  {
+    resolveComponent: components => components.CreateSession,
+  }
 )
 const MySessionsList = loadable(
-    () =>
-        import(
-            /* webpackChunkName: "MySessionsList" */ './site/user/MySessionsList'
-        ),
-    {
-        resolveComponent: components => components.MySessionsList,
-    }
+  () =>
+    import(
+      /* webpackChunkName: "MySessionsList" */ './site/user/MySessionsList'
+    ),
+  {
+    resolveComponent: components => components.MySessionsList,
+  }
 )
 const MyMapsList = loadable(
-    () => import(/* webpackChunkName: "MyMapsList" */ './site/user/MyMapsList'),
-    {
-        resolveComponent: components => components.MyMapsList,
-    }
+  () => import(/* webpackChunkName: "MyMapsList" */ './site/user/MyMapsList'),
+  {
+    resolveComponent: components => components.MyMapsList,
+  }
 )
 const EditMap = loadable(
-    () => import(/* webpackChunkName: "EditMap" */ './site/map/EditMap'),
-    {
-        resolveComponent: components => components.EditMap,
-    }
+  () => import(/* webpackChunkName: "EditMap" */ './site/map/EditMap'),
+  {
+    resolveComponent: components => components.EditMap,
+  }
 )
 // endregion
 
 const useStyles = makeStyles({
-    siteContent: {
-        flex: '1 0 auto',
-        margin: 8,
-        marginBottom: 32,
-    },
+  siteContent: {
+    flex: '1 0 auto',
+    margin: 8,
+    marginBottom: 32,
+  },
 })
 
 const App: FC = (): ReactElement => {
-    const classes = useStyles()
+  const classes = useStyles()
 
-    return (
-        <Provider store={store}>
-            <CssBaseline />
+  return (
+    <Provider store={store}>
+      <CssBaseline />
 
-            <Router>
-                <NavBar />
+      <Router>
+        <NavBar />
 
-                <main className={classes.siteContent}>
-                    <Switch>
-                        <Route exact path='/create-account'>
-                            <CreateAccount />
-                        </Route>
-                        <Route exact path='/login'>
-                            <Login />
-                        </Route>
-                        <Route exact path='/logout'>
-                            <LogOut />
-                        </Route>
-                        <Route exact path='/verify-account'>
-                            <VerifyAccount />
-                        </Route>
+        <main className={classes.siteContent}>
+          <Switch>
+            <Route exact path='/create-account'>
+              <CreateAccount />
+            </Route>
+            <Route exact path='/login'>
+              <Login />
+            </Route>
+            <Route exact path='/logout'>
+              <LogOut />
+            </Route>
+            <Route exact path='/verify-account'>
+              <VerifyAccount />
+            </Route>
 
-                        <Route path='/my-maps-list'>
-                            <MyMapsList />
-                        </Route>
-                        <Route path='/map-edit/:mapId'>
-                            <EditMap />
-                        </Route>
+            <Route path='/my-maps-list'>
+              <MyMapsList />
+            </Route>
+            <Route path='/map-edit/:mapId'>
+              <EditMap />
+            </Route>
 
-                        <Route path='/create-session'>
-                            <CreateSession />
-                        </Route>
-                        <Route path='/session/:sessionId'>
-                            <SessionPage />
-                        </Route>
-                        <Route path='/my-sessions-list'>
-                            <MySessionsList />
-                        </Route>
+            <Route path='/create-session'>
+              <CreateSession />
+            </Route>
+            <Route path='/session/:sessionId'>
+              <SessionPage />
+            </Route>
+            <Route path='/my-sessions-list'>
+              <MySessionsList />
+            </Route>
 
-                        <Route path='/target-select'>
-                            <TargetSelection />
-                        </Route>
+            <Route path='/target-select'>
+              <TargetSelection />
+            </Route>
 
-                        <Route exact path='/'>
-                            <Splash />
-                        </Route>
-                        <Route path='/404'>
-                            <NotFound />
-                        </Route>
+            <Route exact path='/'>
+              <Splash />
+            </Route>
+            <Route path='/404'>
+              <NotFound />
+            </Route>
 
-                        {/* Redirect in case of bad address */}
-                        <Redirect to='/404' />
-                    </Switch>
-                </main>
-                <Footer />
-            </Router>
-        </Provider>
-    )
+            {/* Redirect in case of bad address */}
+            <Redirect to='/404' />
+          </Switch>
+        </main>
+        <Footer />
+      </Router>
+    </Provider>
+  )
 }
 
 ReactDOM.render(<App />, document.getElementById('root'))
